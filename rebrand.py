@@ -167,12 +167,10 @@ canary_public_keys = [
     ]
 ]
 
-configured_reps = args.pre_configured_reps.split(',')
-
 dirs = [
-    ["nano/nano_node", "nano/%s_node" % str.encode(abbreviation)],
-    ["nano/nano_rpc", "nano/%s_rpc" % str.encode(abbreviation)],
-    ["nano/nano_wallet", "nano/%s_wallet" % str.encode(abbreviation)],
+    ["nano/nano_node", "nano/%s_node" % abbreviation],
+    ["nano/nano_rpc", "nano/%s_rpc" % abbreviation],
+    ["nano/nano_wallet", "nano/%s_wallet" % abbreviation],
 ]
 
 landing_faucet_keys = [
@@ -378,19 +376,19 @@ live_preconf_reps = [
 ]
 
 urls = [
-    [b"security\@nano.org", b"security\@%s" % domain],
-    [b"info\@nano.org", b"info\@%s" % domain],
-    [b"russel\@nano.org", b"contact\@%s" % domain],
-    [b"https\:\/\/nano.org", b"https\:\/\/%s" % domain],
-    [b"https\:\/\/nano.org/", b"https\:\/\/%s\/"  % domain],
-    [b"https\:\/\/docs.nano.org", b"https\:\/\/docs.%s"  % domain],
-    [b"https\:\/\/chat.nano.org", b"https\:\/\/chat.%s" % domain],
-    [b"https\:\/\/content.nano.org", b"https\:\/\/content.%s" % domain],
-    [b"peering-beta.nano.org", b"peering-beta.%s" % domain],
-    [b"peering.nano.org", b"peering.%s" % domain],
-    [b"peering-test.nano.org", b"peering-test.%s" % domain],
-    [b"repo.nano.org", b"repo.%s" % domain],
-    [b"nano.org", b"%s" % domain],
+    [b"security\@nano.org", b"security\@%s" % str.encode(domain)],
+    [b"info\@nano.org", b"info\@%s" % str.encode(domain)],
+    [b"russel\@nano.org", b"contact\@%s" % str.encode(domain)],
+    [b"https\:\/\/nano.org", b"https\:\/\/%s" % str.encode(domain)],
+    [b"https\:\/\/nano.org/", b"https\:\/\/%s\/" % str.encode(domain)],
+    [b"https\:\/\/docs.nano.org", b"https\:\/\/docs.%s" % str.encode(domain)],
+    [b"https\:\/\/chat.nano.org", b"https\:\/\/chat.%s" % str.encode(domain)],
+    [b"https\:\/\/content.nano.org", b"https\:\/\/content.%s" % str.encode(domain)],
+    [b"peering-beta.nano.org", b"peering-beta.%s" % str.encode(domain)],
+    [b"peering.nano.org", b"peering.%s" % str.encode(domain)],
+    [b"peering-test.nano.org", b"peering-test.%s" % str.encode(domain)],
+    [b"repo.nano.org", b"repo.%s" % str.encode(domain)],
+    [b"nano.org", b"%s" % str.encode(domain)],
 ]
 
 words = [
@@ -509,7 +507,7 @@ for rep in live_preconf_reps:
 for key in canary_public_keys:
     find_and_replace("nano/secure/common.cpp", key[0], key[1])
 
-list_abbreviation = list(args.abbreviation)
+list_abbreviation = list(abbreviation)
 if len(list_abbreviation) == 3:
     list_abbreviation.append('c')
 
@@ -517,7 +515,7 @@ if len(list_abbreviation) == 3:
 find_and_replace("nano/lib/numbers.cpp",
                  b'destination_a.append ("_onan"); // nano_',
                  b'destination_a.append ("_%s"); // %s_' % (str.encode(''.join(list_abbreviation[::-1])),
-                                                            str.encode(args.abbreviation))
+                                                            str.encode(abbreviation))
                  )
 
 # replace xrb_ prefix
