@@ -7,7 +7,9 @@ import shutil
 import subprocess
 import logging
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+log_level = os.environ.get('DEBUG', default="INFO")
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log_level)
 
 
 def get_env_variable(env):
@@ -238,106 +240,36 @@ genesis_keys = [
     ]
 ]
 
-genesis_data = [
-    # dev_genesis_data
-    [
-        # old
-        b'''{
-            "type": "open",
-            "source": "B0311EA55708D6A53C75CDBF88300259C6D018522FE3D4D0A242E431F9E8B6D0",
-            "representative": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpiij4txtdo",
-            "account": "xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpiij4txtdo",
-            "work": "7b42a00ee91d5810",
-            "signature": "ECDA914373A2F0CA1296475BAEE40500A7F0A7AD72A5A80C81D7FAB7F6C802B2CC7DB50F5DD0FB25B2EF11761FA7344A158DD5A700B21BD47DE5BD0F63153A02"
-        }''',
-        # new
-        b'''{
-            "type": "open",
-            "source": "%s",
-            "representative": "%s",
-            "account": "%s",
-            "work": "%s",
-            "signature": "%s"
-        }''' % (str.encode(genesis_dev_public_key),
-                str.encode(genesis_dev_account),
-                str.encode(genesis_dev_account),
-                str.encode(genesis_dev_work),
-                str.encode(genesis_dev_signature)),
-    ],
-    # beta_genesis_data
-    [  # old
-        b'''{
-            "type": "open",
-            "source": "259A43ABDB779E97452E188BA3EB951B41C961D3318CA6B925380F4D99F0577A",
-            "representative": "nano_1betagoxpxwykx4kw86dnhosc8t3s7ix8eeentwkcg1hbpez1outjrcyg4n1",
-            "account": "nano_1betagoxpxwykx4kw86dnhosc8t3s7ix8eeentwkcg1hbpez1outjrcyg4n1",
-            "work": "79d4e27dc873c6f2",
-            "signature": "4BD7F96F9ED2721BCEE5EAED400EA50AD00524C629AE55E9AFF11220D2C1B00C3D4B3BB770BF67D4F8658023B677F91110193B6C101C2666931F57046A6DB806"
-        }''',
-        # new
-        b'''{
-            "type": "open",
-            "source": "%s",
-            "representative": "%s",
-            "account": "%s",
-            "work": "%s",
-            "signature": "%s"
-        }''' % (str.encode(genesis_beta_public_key),
-                str.encode(genesis_beta_account),
-                str.encode(genesis_beta_account),
-                str.encode(genesis_beta_work),
-                str.encode(genesis_beta_signature)),
-        ],
-    # live_genesis_data
-    [
-        # old
-        b'''{
-            "type": "open",
-            "source": "E89208DD038FBB269987689621D52292AE9C35941A7484756ECCED92A65093BA",
-            "representative": "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3",
-            "account": "xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3",
-            "work": "62f05417dd3fb691",
-            "signature": "9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02"
-        }''',
-        # new
-        b'''{
-            "type": "open",
-            "source": "%s",
-            "representative": "%s",
-            "account": "%s",
-            "work": "%s",
-            "signature": "%s"
-        }''' % (str.encode(genesis_live_public_key),
-                str.encode(genesis_live_account),
-                str.encode(genesis_live_account),
-                str.encode(genesis_live_work),
-                str.encode(genesis_live_signature)),
-    ],
-    # test_genesis_data
-    [
-        # old
-        b'''{
-            "type": "open",
-            "source": "45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED",
-            "representative": "nano_1jg8zygjg3pp5w644emqcbmjqpnzmubfni3kfe1s8pooeuxsw49fdq1mco9j",
-            "account": "nano_1jg8zygjg3pp5w644emqcbmjqpnzmubfni3kfe1s8pooeuxsw49fdq1mco9j",
-            "work": "bc1ef279c1a34eb1",
-            "signature": "15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3C0EE11449232B143B6E07170E"
-        }''',
-        # new
-        b'''{
-            "type": "open",
-            "source": "%s",
-            "representative": "%s",
-            "account": "%s",
-            "work": "%s",
-            "signature": "%s"
-        }''' % (str.encode(genesis_test_public_key),
-                str.encode(genesis_test_account),
-                str.encode(genesis_test_account),
-                str.encode(genesis_test_work),
-                str.encode(genesis_test_signature)),
-    ],
+genesis_dev_data = [
+    [b"B0311EA55708D6A53C75CDBF88300259C6D018522FE3D4D0A242E431F9E8B6D0", b"%s" % str.encode(genesis_dev_public_key)],
+    [b"xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpiij4txtdo", b"%s" % str.encode(genesis_dev_account)],
+    [b"7b42a00ee91d5810", b"%s" % str.encode(genesis_dev_work)],
+    [b"ECDA914373A2F0CA1296475BAEE40500A7F0A7AD72A5A80C81D7FAB7F6C802B2CC7DB50F5DD0FB25B2EF11761FA7344A158DD5A700B21BD47DE5BD0F63153A02",
+     b"%s" % str.encode(genesis_dev_signature)]
+]
+
+genesis_beta_data = [
+    [b"259A43ABDB779E97452E188BA3EB951B41C961D3318CA6B925380F4D99F0577A", b"%s" % str.encode(genesis_beta_public_key)],
+    [b"nano_1betagoxpxwykx4kw86dnhosc8t3s7ix8eeentwkcg1hbpez1outjrcyg4n1", b"%s" % str.encode(genesis_beta_account)],
+    [b"79d4e27dc873c6f2", b"%s" % str.encode(genesis_beta_work)],
+    [b"4BD7F96F9ED2721BCEE5EAED400EA50AD00524C629AE55E9AFF11220D2C1B00C3D4B3BB770BF67D4F8658023B677F91110193B6C101C2666931F57046A6DB806",
+     b"%s" % str.encode(genesis_beta_signature)]
+]
+
+genesis_live_data = [
+    [b"E89208DD038FBB269987689621D52292AE9C35941A7484756ECCED92A65093BA", b"%s" % str.encode(genesis_live_public_key)],
+    [b"xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3", b"%s" % str.encode(genesis_live_account)],
+    [b"62f05417dd3fb691", b"%s" % str.encode(genesis_live_work)],
+    [b"9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
+     b"%s" % str.encode(genesis_live_signature)]
+]
+
+genesis_test_data = [
+    [b"45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED", b"%s" % str.encode(genesis_live_public_key)],
+    [b"nano_1jg8zygjg3pp5w644emqcbmjqpnzmubfni3kfe1s8pooeuxsw49fdq1mco9j", b"%s" % str.encode(genesis_live_account)],
+    [b"bc1ef279c1a34eb1", b"%s" % str.encode(genesis_live_work)],
+    [b"15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3C0EE11449232B143B6E07170E",
+     b"%s" % str.encode(genesis_live_signature)]
 ]
 
 live_preconf_reps = [
@@ -464,7 +396,7 @@ def replace_all(data):
 
             for x in data:
                 if is_ignored(filepath, ignore_list):
-                    print("File is ignored!")
+                    logging.debug("IGNORED %s" % filepath)
                 else:
                     find_and_replace(filepath, x[0], x[1])
 
@@ -481,16 +413,28 @@ replace_all(words)
 replace_all(urls)
 
 # replace dev_genesis_data
-find_and_replace("nano/lib/numbers.cpp", genesis_data[0][0], genesis_data[0][1])
+for data in genesis_dev_data:
+    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    logging.debug("Found %s" % data[0])
+    logging.debug("Replaced %s" % data[1])
 
 # replace beta_genesis_data
-find_and_replace("nano/lib/numbers.cpp", genesis_data[1][0], genesis_data[1][1])
+for data in genesis_beta_data:
+    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    logging.debug("Found %s" % data[0])
+    logging.debug("Replaced %s" % data[1])
 
 # replace live_genesis_data
-find_and_replace("nano/lib/numbers.cpp", genesis_data[2][0], genesis_data[2][1])
+for data in genesis_live_data:
+    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    logging.debug("Found %s" % data[0])
+    logging.debug("Replaced %s" % data[1])
 
 # replace test_genesis_data
-find_and_replace("nano/lib/numbers.cpp", genesis_data[3][0], genesis_data[3][1])
+for data in genesis_test_data:
+    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    logging.debug("Found %s" % data[0])
+    logging.debug("Replaced %s" % data[1])
 
 # replace accounts
 replace_all(accounts)
@@ -508,8 +452,6 @@ for key in canary_public_keys:
     find_and_replace("nano/secure/common.cpp", key[0], key[1])
 
 list_abbreviation = list(abbreviation)
-if len(list_abbreviation) == 3:
-    list_abbreviation.append('c')
 
 # replace _onan
 find_and_replace("nano/lib/numbers.cpp",
@@ -528,13 +470,53 @@ find_and_replace("nano/lib/numbers.cpp",
                                                        str.encode(list_abbreviation[2]))
                  )
 
-# replace nano_ prefix
-find_and_replace("nano/lib/numbers.cpp",
-                 b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
-                 b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
-                 b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
-                 b"== '%s' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
-                                                                               str.encode(list_abbreviation[1]),
-                                                                               str.encode(list_abbreviation[2]),
-                                                                               str.encode(list_abbreviation[3]))
-                 )
+if len(list_abbreviation) == 3:
+    # replace nano_ prefix
+    find_and_replace("nano/lib/numbers.cpp",
+                     b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
+                     b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
+                     b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
+                     b"== 'c' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
+                                                                                  str.encode(list_abbreviation[1]),
+                                                                                  str.encode(list_abbreviation[2]))
+                     )
+else:
+    # replace nano_ prefix
+    find_and_replace("nano/lib/numbers.cpp",
+                     b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
+                     b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
+                     b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
+                     b"== '%s' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
+                                                                                   str.encode(list_abbreviation[1]),
+                                                                                   str.encode(list_abbreviation[2]),
+                                                                                   str.encode(list_abbreviation[3]))
+                     )
+
+# build.sh
+find_and_replace("docker/node/entry.sh", b"nano-node", b"%s-node" % str.encode(abbreviation))
+
+# Dockerfile
+find_and_replace("docker/node/Dockerfile", b"make nano_node", b"make %s_node" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile", b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile", b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile",
+                 b"RUN groupadd --gid 1000 nanocurrency",
+                 b"RUN groupadd --gid 1000 %scurrency" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile",
+                 b"useradd --uid 1000 --gid nanocurrency",
+                 b"useradd --uid 1000 --gid %scurrency" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile",
+                 b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home nanocurrency",
+                 b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home %scurrency" %
+                 str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile", b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile", b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
+find_and_replace("docker/node/Dockerfile", b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
+
+# entry.sh
+find_and_replace("docker/node/entry.sh", b"nano_node", b"%s_node" % str.encode(abbreviation))
+find_and_replace("docker/node/entry.sh", b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
+
+# rename nano_pow_server.cpp
+if os.path.exists("nano-pow-server/src/entry/nano_pow_server.cpp"):
+    os.rename("nano-pow-server/src/entry/nano_pow_server.cpp", "nano-pow-server/src/entry/kor_pow_server.cpp")
