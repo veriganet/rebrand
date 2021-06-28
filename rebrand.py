@@ -8,13 +8,22 @@ import subprocess
 import logging
 
 log_level = os.environ.get('DEBUG', default="INFO")
-
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log_level)
+
+
+def remove_prefix(text, prefix):
+    return text[len(prefix):] if text.startswith(prefix) else text
+
+
+cwd = "./"
+if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
+    repo_link_without_https = remove_prefix(os.environ.get("DRONE_REPO_LINK"), "https://")
+    cwd = "/drone/src/%s/" % repo_link_without_https
 
 
 def get_env_variable(env):
     if not os.environ.get(env, None):
-        return logging.error("%s is not defined!" % env)
+        return logging.error("%s is not defined!" % env), exit(1)
     else:
         logging.debug("%s properly set." % env)
         return os.environ.get(env)
@@ -98,7 +107,7 @@ args = parser.parse_args()
 
 # Check for --version or -V
 if args.version:
-    print("0.0.1")
+    print("V22.0_0.0.1")
 
 accounts = [
     # nano/core_test/block.cpp .account_address
@@ -170,9 +179,9 @@ canary_public_keys = [
 ]
 
 dirs = [
-    ["nano/nano_node", "nano/%s_node" % abbreviation],
-    ["nano/nano_rpc", "nano/%s_rpc" % abbreviation],
-    ["nano/nano_wallet", "nano/%s_wallet" % abbreviation],
+    ["%snano/nano_node" % cwd, "%snano/%s_node" % (cwd, abbreviation)],
+    ["%snano/nano_rpc" % cwd, "%snano/%s_rpc" % (cwd, abbreviation)],
+    ["%snano/nano_wallet" % cwd, "%snano/%s_wallet" % (cwd, abbreviation)],
 ]
 
 landing_faucet_keys = [
@@ -345,7 +354,7 @@ words = [
 
 def key_create(a):
     lines = []
-    proc = subprocess.Popen(['nano-node-22.0.0-Linux/bin/nano_node', '--key_create'], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['%snano-node-22.0.0-Linux/bin/nano_node' % cwd, '--key_create'], stdout=subprocess.PIPE)
     while True:
         line = proc.stdout.readline()
         if not line:
@@ -390,7 +399,7 @@ def find_and_replace(filename, find, replace):
 
 
 def replace_all(data):
-    for dirname, dirs, files in os.walk(os.getcwd()):
+    for dirname, dirs, files in os.walk(cwd):
         for file_name in files:
             filepath = os.path.join(dirname, file_name)
 
@@ -414,25 +423,25 @@ replace_all(urls)
 
 # replace dev_genesis_data
 for data in genesis_dev_data:
-    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace beta_genesis_data
 for data in genesis_beta_data:
-    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace live_genesis_data
 for data in genesis_live_data:
-    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace test_genesis_data
 for data in genesis_test_data:
-    find_and_replace("nano/secure/common.cpp", data[0], data[1])
+    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
@@ -441,27 +450,27 @@ replace_all(accounts)
 
 # replace landing / faucet account
 for key in landing_faucet_keys:
-    find_and_replace("nano/node/json_handler.cpp", key[0], key[1])
+    find_and_replace("%snano/node/json_handler.cpp" % cwd, key[0], key[1])
 
 # replace live preconfigured representative
 for rep in live_preconf_reps:
-    find_and_replace("nano/node/nodeconfig.cpp", rep[0], rep[1])
+    find_and_replace("%snano/node/nodeconfig.cpp" % cwd, rep[0], rep[1])
 
 # replace canary public keys
 for key in canary_public_keys:
-    find_and_replace("nano/secure/common.cpp", key[0], key[1])
+    find_and_replace("%snano/secure/common.cpp" % cwd, key[0], key[1])
 
 list_abbreviation = list(abbreviation)
 
 # replace _onan
-find_and_replace("nano/lib/numbers.cpp",
+find_and_replace("%snano/lib/numbers.cpp" % cwd,
                  b'destination_a.append ("_onan"); // nano_',
                  b'destination_a.append ("_%s"); // %s_' % (str.encode(''.join(list_abbreviation[::-1])),
                                                             str.encode(abbreviation))
                  )
 
 # replace xrb_ prefix
-find_and_replace("nano/lib/numbers.cpp",
+find_and_replace("%snano/lib/numbers.cpp" % cwd,
                  b"auto xrb_prefix (source_a[0] == 'x' && source_a[1] == 'r' && source_a[2] == 'b' && (source_a[3] == "
                  b"'_' || source_a[3] == '-'));",
                  b"auto xrb_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && (source_a[3] "
@@ -472,7 +481,7 @@ find_and_replace("nano/lib/numbers.cpp",
 
 if len(list_abbreviation) == 3:
     # replace nano_ prefix
-    find_and_replace("nano/lib/numbers.cpp",
+    find_and_replace("%snano/lib/numbers.cpp" % cwd,
                      b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
                      b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
                      b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
@@ -482,7 +491,7 @@ if len(list_abbreviation) == 3:
                      )
 else:
     # replace nano_ prefix
-    find_and_replace("nano/lib/numbers.cpp",
+    find_and_replace("%snano/lib/numbers.cpp" % cwd,
                      b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
                      b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
                      b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
@@ -493,30 +502,30 @@ else:
                      )
 
 # build.sh
-find_and_replace("docker/node/entry.sh", b"nano-node", b"%s-node" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/entry.sh" % cwd, b"nano-node", b"%s-node" % str.encode(abbreviation))
 
 # Dockerfile
-find_and_replace("docker/node/Dockerfile", b"make nano_node", b"make %s_node" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile", b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile", b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile",
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_node", b"make %s_node" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd,
                  b"RUN groupadd --gid 1000 nanocurrency",
                  b"RUN groupadd --gid 1000 %scurrency" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile",
+find_and_replace("%sdocker/node/Dockerfile" % cwd,
                  b"useradd --uid 1000 --gid nanocurrency",
                  b"useradd --uid 1000 --gid %scurrency" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile",
+find_and_replace("%sdocker/node/Dockerfile" % cwd,
                  b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home nanocurrency",
                  b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home %scurrency" %
                  str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile", b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile", b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
-find_and_replace("docker/node/Dockerfile", b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/Dockerfile" % cwd, b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
 
 # entry.sh
-find_and_replace("docker/node/entry.sh", b"nano_node", b"%s_node" % str.encode(abbreviation))
-find_and_replace("docker/node/entry.sh", b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
+find_and_replace("%sdocker/node/entry.sh" % cwd, b"nano_node", b"%s_node" % str.encode(abbreviation))
+find_and_replace("%sdocker/node/entry.sh" % cwd, b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
 
 # rename nano_pow_server.cpp
-if os.path.exists("nano-pow-server/src/entry/nano_pow_server.cpp"):
-    os.rename("nano-pow-server/src/entry/nano_pow_server.cpp", "nano-pow-server/src/entry/kor_pow_server.cpp")
+if os.path.exists("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd):
+    os.rename("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd, "%snano-pow-server/src/entry/kor_pow_server.cpp" % cwd)
