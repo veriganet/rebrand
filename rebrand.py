@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import logging
 
-log_level = os.environ.get('DEBUG', default="INFO")
+log_level = os.environ.get('DEBUG', default="DEBUG")
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log_level)
 
 
@@ -16,6 +16,7 @@ def remove_prefix(text, prefix):
 
 
 cwd = "./"
+logging.debug(cwd)
 if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
     repo_link_without_https = remove_prefix(os.environ.get("DRONE_REPO_LINK"), "https://")
     cwd = "/drone/src/%s/" % repo_link_without_https
@@ -23,7 +24,7 @@ if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
 
 def get_env_variable(env):
     if not os.environ.get(env, None):
-        return logging.error("%s is not defined!" % env), exit(1)
+        return logging.error("%s is not defined!" % env)
     else:
         logging.debug("%s properly set." % env)
         return os.environ.get(env)
@@ -31,6 +32,9 @@ def get_env_variable(env):
 
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
 abbreviation = get_env_variable('ABBREVIATION')
+
+# Visible name of the block chain
+block_name = get_env_variable('BLOCK_NAME')
 
 # Public key of canary account for beta environment
 canary_beta_public_key = get_env_variable('CANARY_BETA_PUBLIC_KEY')
@@ -86,8 +90,13 @@ live_pre_configured_rep5 = get_env_variable('LIVE_PRE_CONFIGURED_REP5')
 live_pre_configured_rep6 = get_env_variable('LIVE_PRE_CONFIGURED_REP6')
 live_pre_configured_rep7 = get_env_variable('LIVE_PRE_CONFIGURED_REP7')
 
-# Visible name of the block chain
-block_name = get_env_variable('BLOCK_NAME')
+live_node_peering_port = get_env_variable('LIVE_NODE_PEERING_PORT')
+beta_node_peering_port = get_env_variable('BETA_NODE_PEERING_PORT')
+test_node_peering_port = get_env_variable('TEST_NODE_PEERING_PORT')
+
+live_rpc_port = get_env_variable('LIVE_RPC_PORT')
+beta_rpc_port = get_env_variable('BETA_RPC_PORT')
+test_rpc_port = get_env_variable('TEST_RPC_PORT')
 
 main_desc = "Script to rebrand nano-node as new block chain." \
             "Example: " \
@@ -529,3 +538,21 @@ find_and_replace("%sdocker/node/entry.sh" % cwd, b"/Nano", b"/%s" % str.encode(a
 # rename nano_pow_server.cpp
 if os.path.exists("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd):
     os.rename("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd, "%snano-pow-server/src/entry/kor_pow_server.cpp" % cwd)
+
+# replace ports
+# node
+find_and_replace("%snano/core_test/toml.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano/lib/config.hpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
+find_and_replace("%snano/lib/config.hpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
+find_and_replace("%snano/lib/config.hpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
+find_and_replace("%snano/qt/qt.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+
+#rpc
+find_and_replace("%snano/lib/config.cpp" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
+find_and_replace("%sci/record_rep_weights.py" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"17076", b"1%s" % str.encode(live_rpc_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"55000", b"%s" % str.encode(beta_rpc_port))
+find_and_replace("%snano/lib/config.cpp" % cwd, b"45000", b"%s" % str.encode(test_rpc_port))
