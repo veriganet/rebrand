@@ -18,8 +18,7 @@ def remove_prefix(text, prefix):
 cwd = "./"
 logging.debug(cwd)
 if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
-    repo_link_without_https = remove_prefix(os.environ.get("DRONE_REPO_LINK"), "https://")
-    cwd = "/drone/src/%s/" % repo_link_without_https
+    cwd = "/drone/src/"
 
 
 def get_env_variable(env):
