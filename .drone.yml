@@ -8,8 +8,6 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run
-    settings:
-      from_secret: docker_secret_veriga
     environment:
       AWS_ACCESS_KEY_ID:
         from_secret: drone_aws_access_key_id
@@ -37,3 +35,6 @@ services:
 volumes:
 - name: dockersock
   temp: {}
+
+image_pull_secrets:
+  - docker_secret_veriga
