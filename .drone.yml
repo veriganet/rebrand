@@ -4,12 +4,12 @@ name: rebrand
 
 steps:
   - name: build-push-image
-    image: veriganet/dind-awscli
+    image: registry-aws.veriga.net/base-image:dind-awscli
     volumes:
       - name: dockersock
         path: /var/run
     settings:
-      from_secret: docker_secret
+      from_secret: docker_secret_veriga
     environment:
       AWS_ACCESS_KEY_ID:
         from_secret: drone_aws_access_key_id
