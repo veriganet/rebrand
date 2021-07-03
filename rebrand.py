@@ -45,7 +45,7 @@ canary_live_public_key = get_env_variable('CANARY_LIVE_PUBLIC_KEY')
 canary_test_public_key = get_env_variable('CANARY_TEST_PUBLIC_KEY')
 
 # Fully qualified domain name for official nodes / representatives"
-# "Default: [abbreviation].block.veriga.net"
+# "Default: [abbreviation].veriga.net"
 # "Example: korcoin.net"
 domain = get_env_variable('DOMAIN')
 
@@ -324,21 +324,43 @@ live_preconf_reps = [
     ]
 ]
 
-urls = [
-    [b"security\@nano.org", b"security\@%s" % str.encode(domain)],
-    [b"info\@nano.org", b"info\@%s" % str.encode(domain)],
-    [b"russel\@nano.org", b"contact\@%s" % str.encode(domain)],
-    [b"https\:\/\/nano.org", b"https\:\/\/%s" % str.encode(domain)],
-    [b"https\:\/\/nano.org/", b"https\:\/\/%s\/" % str.encode(domain)],
-    [b"https\:\/\/docs.nano.org", b"https\:\/\/docs.%s" % str.encode(domain)],
-    [b"https\:\/\/chat.nano.org", b"https\:\/\/chat.%s" % str.encode(domain)],
-    [b"https\:\/\/content.nano.org", b"https\:\/\/content.%s" % str.encode(domain)],
-    [b"peering-beta.nano.org", b"peering-beta.%s" % str.encode(domain)],
-    [b"peering.nano.org", b"peering.%s" % str.encode(domain)],
-    [b"peering-test.nano.org", b"peering-test.%s" % str.encode(domain)],
-    [b"repo.nano.org", b"repo.%s" % str.encode(domain)],
-    [b"nano.org", b"%s" % str.encode(domain)],
-]
+if domain == "veriga.net":
+    logging.debug("Custom domain is not set. Using vergia.net")
+    urls = [
+        [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"info@nano.org", b"%s-info@%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"russel@nano.org", b"%s-contact@%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"https://nano.org", b"https://%s.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"https://nano.org/", b"https://%s.%s/" % (str.encode(abbreviation), str.encode(domain))],
+        [b"https://docs.nano.org", b"https://%s-docs.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"https://chat.nano.org", b"https://%s-chat.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"https://content.nano.org", b"https://%s-content.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"peering-beta.nano.org", b"%s-peering-beta.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"peering-test.nano.org", b"%s-peering-test.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"repo.nano.org", b"%s-repo.%s" % (str.encode(abbreviation), str.encode(domain))],
+        #[b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domain))],
+    ]
+    logging.debug(urls)
+else:
+    logging.debug("Custom domain is set. Using %s" % domain)
+    urls = [
+        [b"security@nano.org", b"security@%s" % str.encode(domain)],
+        [b"info@nano.org", b"info@%s" % str.encode(domain)],
+        [b"russel@nano.org", b"contact@%s" % str.encode(domain)],
+        [b"https://nano.org", b"https://%s" % str.encode(domain)],
+        [b"https://nano.org/", b"https://%s/" % str.encode(domain)],
+        [b"https://docs.nano.org", b"https://docs.%s" % str.encode(domain)],
+        [b"https://chat.nano.org", b"https://chat.%s" % str.encode(domain)],
+        [b"https://content.nano.org", b"https://content.%s" % str.encode(domain)],
+        [b"peering-beta.nano.org", b"peering-beta.%s" % str.encode(domain)],
+        [b"peering.nano.org", b"peering.%s" % str.encode(domain)],
+        [b"peering-test.nano.org", b"peering-test.%s" % str.encode(domain)],
+        [b"repo.nano.org", b"repo.%s" % str.encode(domain)],
+        [b"nano.org", b"%s" % str.encode(domain)],
+    ]
+    logging.debug(urls)
+
 
 words = [
     [b"nano_pow_server", b"%s_pow_server" % str.encode(abbreviation)],
