@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import logging
 
-log_level = os.environ.get('DEBUG', default="DEBUG")
+log_level = os.environ.get('LOGGING', default="INFO")
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log_level)
 
 
