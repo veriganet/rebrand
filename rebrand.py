@@ -45,9 +45,10 @@ canary_live_public_key = get_env_variable('CANARY_LIVE_PUBLIC_KEY')
 canary_test_public_key = get_env_variable('CANARY_TEST_PUBLIC_KEY')
 
 # Fully qualified domain name for official nodes / representatives"
-# "Default: [abbreviation].veriga.net"
 # "Example: korcoin.net"
 domain = get_env_variable('DOMAIN')
+domainsvc = get_env_variable('DOMAINSVC')
+
 
 # Public key of faucet account
 faucet_public_key = get_env_variable('FAUCET_PUBLIC_KEY')
@@ -324,22 +325,22 @@ live_preconf_reps = [
     ]
 ]
 
-if domain == "veriga.net":
-    logging.debug("Custom domain is not set. Using vergia.net")
+if domain == domainsvc:
+    logging.debug("Custom domain is not set. Using %s" % domainsvc)
     urls = [
-        [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"info@nano.org", b"%s-info@%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"russel@nano.org", b"%s-contact@%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"https://nano.org", b"https://%s.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"https://nano.org/", b"https://%s.%s/" % (str.encode(abbreviation), str.encode(domain))],
-        [b"https://docs.nano.org", b"https://%s-docs.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"https://chat.nano.org", b"https://%s-chat.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"https://content.nano.org", b"https://%s-content.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"peering-beta.nano.org", b"%s-peering-beta.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"peering-test.nano.org", b"%s-peering-test.%s" % (str.encode(abbreviation), str.encode(domain))],
-        [b"repo.nano.org", b"%s-repo.%s" % (str.encode(abbreviation), str.encode(domain))],
-        #[b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domain))],
+        [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"info@nano.org", b"%s-info@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"russel@nano.org", b"%s-contact@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"https://nano.org", b"https://%s.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"https://nano.org/", b"https://%s.%s/" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"https://docs.nano.org", b"https://%s-docs.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"https://chat.nano.org", b"https://%s-chat.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"https://content.nano.org", b"https://%s-content.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"peering-beta.nano.org", b"%s-peering-beta.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"peering-test.nano.org", b"%s-peering-test.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        [b"repo.nano.org", b"%s-repo.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        #[b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
     ]
     logging.debug(urls)
 else:
