@@ -44,6 +44,8 @@ canary_live_public_key = get_env_variable('CANARY_LIVE_PUBLIC_KEY')
 # Public key of canary account for live environment
 canary_test_public_key = get_env_variable('CANARY_TEST_PUBLIC_KEY')
 
+custom_domain = get_env_variable('CUSTOM_DOMAIN')
+
 # Fully qualified domain name for official nodes / representatives"
 # "Example: korcoin.net"
 domain = get_env_variable('DOMAIN')
@@ -325,7 +327,7 @@ live_preconf_reps = [
     ]
 ]
 
-if domain == domainsvc:
+if custom_domain == "false":
     logging.debug("Custom domain is not set. Using %s" % domainsvc)
     urls = [
         [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
