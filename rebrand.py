@@ -100,6 +100,9 @@ live_rpc_port = get_env_variable('LIVE_RPC_PORT')
 beta_rpc_port = get_env_variable('BETA_RPC_PORT')
 test_rpc_port = get_env_variable('TEST_RPC_PORT')
 
+# number of peers
+number_of_peers = get_env_variable('NUMBER_OF_PEERS')
+
 main_desc = "Script to rebrand nano-node as new block chain." \
             "Example: " \
             "rebrand.py"
@@ -339,12 +342,22 @@ if custom_domain == "false":
         [b"https://chat.nano.org", b"https://%s-chat.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"https://content.nano.org", b"https://%s-content.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"peering-beta.nano.org", b"%s-peering-beta.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
-        [b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        #[b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"peering-test.nano.org", b"%s-peering-test.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"repo.nano.org", b"%s-repo.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         #[b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
     ]
     logging.debug(urls)
+
+    peers = ''
+    preconfigured_peers = ""
+    for p in range(int(number_of_peers)):
+        peer = "%s-peering%s.%s" % (abbreviation, str(p), domainsvc)
+        peers = peers + 'const char * default_live_peer_network%s' % str(p) + ' = "' + peer + '";' + "\n"
+        preconfigured_peer = "preconfigured_peers.emplace_back(default_live_peer_network%s);" % str(p)
+        preconfigured_peers = preconfigured_peers + preconfigured_peer + "\n"
+    logging.debug(peers)
+    logging.debug(preconfigured_peers)
 else:
     logging.debug("Custom domain is set. Using %s" % domain)
     urls = [
@@ -364,6 +377,15 @@ else:
     ]
     logging.debug(urls)
 
+    peers = ''
+    preconfigured_peers = ""
+    for p in range(int(number_of_peers)):
+        peer = "%s-peering%s.%s" % (abbreviation, str(p), domain)
+        peers = peers + 'const char * default_live_peer_network%s' % str(p) + ' = "' + peer + '";' + "\n"
+        preconfigured_peer = "preconfigured_peers.emplace_back(default_live_peer_network%s);" % str(p)
+        preconfigured_peers = preconfigured_peers + preconfigured_peer + "\n"
+    logging.debug(peers)
+    logging.debug(preconfigured_peers)
 
 words = [
     [b"nano_pow_server", b"%s_pow_server" % str.encode(abbreviation)],
@@ -580,3 +602,11 @@ find_and_replace("%sci/record_rep_weights.py" % cwd, b"7076", b"%s" % str.encode
 find_and_replace("%snano/lib/config.cpp" % cwd, b"17076", b"1%s" % str.encode(live_rpc_port))
 find_and_replace("%snano/lib/config.cpp" % cwd, b"55000", b"%s" % str.encode(beta_rpc_port))
 find_and_replace("%snano/lib/config.cpp" % cwd, b"45000", b"%s" % str.encode(test_rpc_port))
+
+# replace peering
+find_and_replace("%snano/node/nodeconfig.cpp" % cwd,
+                 b'const char * default_live_peer_network = "peering.nano.org";',
+                 b"%s" % str.encode(peers.strip()))
+find_and_replace("%snano/node/nodeconfig.cpp" % cwd,
+                 b'preconfigured_peers.push_back (default_live_peer_network);',
+                 b"%s" % str.encode(preconfigured_peers.strip()))
