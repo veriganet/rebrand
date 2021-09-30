@@ -3,7 +3,7 @@ type: kubernetes
 name: rebrand
 
 steps:
-  - name: build-push-image
+  - name: rebrand-node
     image: registry-aws.veriga.net/base-image:dind-awscli
     volumes:
       - name: dockersock
@@ -23,6 +23,28 @@ steps:
     when:
       event:
         - push
+
+  - name: rebrand-nault
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR: 776553443280.dkr.ecr.eu-west-1.amazonaws.com
+    commands:
+      - sleep 10 # give docker enough time to start
+      - docker build . -f Dockerfile_nault -t rebrand:nault-latest
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker tag rebrand:latest $ECR/rebrand:nault-latest
+      - docker push $ECR/rebrand:nault-latest
+    when:
+      event:
+        - push
+
 
 services:
 - name: docker
