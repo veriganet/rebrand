@@ -1,4 +1,0 @@
-FROM python:buster
-
-ADD rebrand_nault.py /usr/local/bin/rebrand-nault
-RUN chmod +x /usr/local/bin/rebrand-nault
