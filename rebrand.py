@@ -478,25 +478,25 @@ replace_all(urls)
 
 # replace dev_genesis_data
 for data in genesis_dev_data:
-    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
+    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace beta_genesis_data
 for data in genesis_beta_data:
-    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
+    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace live_genesis_data
 for data in genesis_live_data:
-    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
+    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace test_genesis_data
 for data in genesis_test_data:
-    find_and_replace("%snano/secure/common.cpp" % cwd, data[0], data[1])
+    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
@@ -505,27 +505,27 @@ replace_all(accounts)
 
 # replace landing / faucet account
 for key in landing_faucet_keys:
-    find_and_replace("%snano/node/json_handler.cpp" % cwd, key[0], key[1])
+    find_and_replace("%snano-node/nano/node/json_handler.cpp" % cwd, key[0], key[1])
 
 # replace live preconfigured representative
 for rep in live_preconf_reps:
-    find_and_replace("%snano/node/nodeconfig.cpp" % cwd, rep[0], rep[1])
+    find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd, rep[0], rep[1])
 
 # replace canary public keys
 for key in canary_public_keys:
-    find_and_replace("%snano/secure/common.cpp" % cwd, key[0], key[1])
+    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, key[0], key[1])
 
 list_abbreviation = list(abbreviation)
 
 # replace _onan
-find_and_replace("%snano/lib/numbers.cpp" % cwd,
+find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
                  b'destination_a.append ("_onan"); // nano_',
                  b'destination_a.append ("_%s"); // %s_' % (str.encode(''.join(list_abbreviation[::-1])),
                                                             str.encode(abbreviation))
                  )
 
 # replace xrb_ prefix
-find_and_replace("%snano/lib/numbers.cpp" % cwd,
+find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
                  b"auto xrb_prefix (source_a[0] == 'x' && source_a[1] == 'r' && source_a[2] == 'b' && (source_a[3] == "
                  b"'_' || source_a[3] == '-'));",
                  b"auto xrb_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && (source_a[3] "
@@ -536,7 +536,7 @@ find_and_replace("%snano/lib/numbers.cpp" % cwd,
 
 if len(list_abbreviation) == 3:
     # replace nano_ prefix
-    find_and_replace("%snano/lib/numbers.cpp" % cwd,
+    find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
                      b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
                      b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
                      b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
@@ -546,7 +546,7 @@ if len(list_abbreviation) == 3:
                      )
 else:
     # replace nano_ prefix
-    find_and_replace("%snano/lib/numbers.cpp" % cwd,
+    find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
                      b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
                      b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
                      b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
@@ -557,56 +557,56 @@ else:
                      )
 
 # build.sh
-find_and_replace("%sdocker/node/entry.sh" % cwd, b"nano-node", b"%s-node" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"nano-node", b"%s-node" % str.encode(abbreviation))
 
 # Dockerfile
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_node", b"make %s_node" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd,
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_node", b"make %s_node" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
                  b"RUN groupadd --gid 1000 nanocurrency",
                  b"RUN groupadd --gid 1000 %scurrency" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd,
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
                  b"useradd --uid 1000 --gid nanocurrency",
                  b"useradd --uid 1000 --gid %scurrency" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd,
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
                  b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home nanocurrency",
                  b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home %scurrency" %
                  str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/Dockerfile" % cwd, b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
 
 # entry.sh
-find_and_replace("%sdocker/node/entry.sh" % cwd, b"nano_node", b"%s_node" % str.encode(abbreviation))
-find_and_replace("%sdocker/node/entry.sh" % cwd, b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
+find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"nano_node", b"%s_node" % str.encode(abbreviation))
+find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
 
 # rename nano_pow_server.cpp
-if os.path.exists("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd):
-    os.rename("%snano-pow-server/src/entry/nano_pow_server.cpp" % cwd, "%snano-pow-server/src/entry/kor_pow_server.cpp" % cwd)
+if os.path.exists("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % cwd):
+    os.rename("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % cwd, "%snano-node/nano-pow-server/src/entry/kor_pow_server.cpp" % cwd)
 
 # replace ports
 # node
-find_and_replace("%snano/core_test/toml.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano/lib/config.hpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
-find_and_replace("%snano/lib/config.hpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
-find_and_replace("%snano/lib/config.hpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
-find_and_replace("%snano/qt/qt.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano-node/nano/core_test/toml.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
+find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
+find_and_replace("%snano-node/nano/qt/qt.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
 
 #rpc
-find_and_replace("%snano/lib/config.cpp" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
-find_and_replace("%sci/record_rep_weights.py" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"17076", b"1%s" % str.encode(live_rpc_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"55000", b"%s" % str.encode(beta_rpc_port))
-find_and_replace("%snano/lib/config.cpp" % cwd, b"45000", b"%s" % str.encode(test_rpc_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
+find_and_replace("%snano-node/ci/record_rep_weights.py" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"17076", b"1%s" % str.encode(live_rpc_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"55000", b"%s" % str.encode(beta_rpc_port))
+find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"45000", b"%s" % str.encode(test_rpc_port))
 
 # replace peering
-find_and_replace("%snano/node/nodeconfig.cpp" % cwd,
+find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
                  b'const char * default_live_peer_network = "peering.nano.org";',
                  b"%s" % str.encode(peers.strip()))
-find_and_replace("%snano/node/nodeconfig.cpp" % cwd,
+find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
                  b'preconfigured_peers.push_back (default_live_peer_network);',
                  b"%s" % str.encode(preconfigured_peers.strip()))
