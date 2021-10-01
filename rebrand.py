@@ -193,9 +193,9 @@ canary_public_keys = [
 ]
 
 dirs = [
-    ["%snano/nano_node" % cwd, "%snano/%s_node" % (cwd, abbreviation)],
-    ["%snano/nano_rpc" % cwd, "%snano/%s_rpc" % (cwd, abbreviation)],
-    ["%snano/nano_wallet" % cwd, "%snano/%s_wallet" % (cwd, abbreviation)],
+    ["%snano-node/nano/nano_node" % cwd, "%snano-node/nano/%s_node" % (cwd, abbreviation)],
+    ["%snano-node/nano/nano_rpc" % cwd, "%snano-node/nano/%s_rpc" % (cwd, abbreviation)],
+    ["%snano-node/nano/nano_wallet" % cwd, "%snano-node/nano/%s_wallet" % (cwd, abbreviation)],
 ]
 
 landing_faucet_keys = [
