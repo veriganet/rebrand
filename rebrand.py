@@ -18,7 +18,7 @@ def remove_prefix(text, prefix):
 cwd = "./"
 logging.debug(cwd)
 if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
-    cwd = "/drone/src/"
+    cwd = "/drone/src/nano-node"
 
 
 def get_env_variable(env):
