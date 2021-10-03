@@ -235,8 +235,7 @@ ignore_list = [
     "rep_weights_live",
     "clang-format",
     "env_local",
-    "env_example",
-    "CMakeLists",
+    "env_example"
 ]
 
 genesis_keys = [
@@ -455,7 +454,7 @@ def find_and_replace(filename, find, replace):
 
 
 def replace_all(data):
-    for dirname, dirs, files in os.walk(cwd):
+    for dirname, dirs, files in os.walk(cwd+"/nano-node"):
         for file_name in files:
             filepath = os.path.join(dirname, file_name)
 
@@ -611,14 +610,3 @@ find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
 find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
                  b'preconfigured_peers.push_back (default_live_peer_network);',
                  b"%s" % str.encode(preconfigured_peers.strip()))
-
-# CMakeLists.txt
-find_and_replace("%snano-node/CMakeLists.txt" % cwd,
-                 b'nano_node',
-                 b"%s_node" % str.encode(abbreviation))
-find_and_replace("%snano-node/CMakeLists.txt" % cwd,
-                 b'nano_rpc',
-                 b"%s_rpc" % str.encode(abbreviation))
-find_and_replace("%snano-node/CMakeLists.txt" % cwd,
-                 b'nano_wallet',
-                 b"%s_wallet" % str.encode(abbreviation))

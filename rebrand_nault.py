@@ -112,7 +112,7 @@ def find_and_replace(filename, find, replace):
 
 
 def replace_all(data):
-    for dirname, dirs, files in os.walk(cwd):
+    for dirname, dirs, files in os.walk(cwd+"/nault"):
         for file_name in files:
             filepath = os.path.join(dirname, file_name)
 
