@@ -82,7 +82,8 @@ ignore_list = [
     "rep_weights_live",
     "clang-format",
     "env_local",
-    "env_example"
+    "env_example",
+    "node_modules"
 ]
 
 
@@ -112,7 +113,7 @@ def find_and_replace(filename, find, replace):
 
 
 def replace_all(data):
-    for dirname, dirs, files in os.walk(cwd+"/nault"):
+    for dirname, dirs, files in os.walk(cwd+"/Nault"):
         for file_name in files:
             filepath = os.path.join(dirname, file_name)
 
@@ -124,15 +125,18 @@ def replace_all(data):
 
 
 words = [
-    [b"'nano_'", b"'%s_'" % str.encode(abbreviation)],
+    #[b"'nano_'", b"'%s_'" % str.encode(abbreviation)],
     [b"nano_abc...123", b"%s_abc...123" % str.encode(abbreviation)],
+    [b"nano_abc..123", b"%s_abc...123" % str.encode(abbreviation)],
     [b"nano_1abc...", b"%s_abc..." % str.encode(abbreviation)],
     [b"nano_abc123", b"%s_abc123" % str.encode(abbreviation)],
     [b"xrb_ or nano_'", b"%s_'" % str.encode(abbreviation)],
     [b"nano_3niceeeyiaa86k58zhaeygxfkuzgffjtwju9ep33z9c8qekmr3iuc95jbqc8", b"%s_" % str.encode(abbreviation)],
-    [b" NANO", b" %s" % str.encode(abbreviation.capitalize())],
-    [b">NANO<", b">%s<" % str.encode(abbreviation.capitalize())],
-    [b"NANO ", b"%s " % str.encode(abbreviation.capitalize())],
+    [b" NANO", b" %s" % str.encode(abbreviation.upper())],
+    [b">NANO<", b">%s<" % str.encode(abbreviation.upper())],
+    [b"NANO ", b"%s " % str.encode(abbreviation.upper())],
+    [b"replace('xrb_', 'nano_')", b"replace('nano_', '%s_')" % str.encode(abbreviation)],
+    [b"replace('nano_', 'xrb_')", b"replace('nano_', '%s_')" % str.encode(abbreviation)],
 ]
 replace_all(words)
 
@@ -252,7 +256,7 @@ find_and_replace("%sNault/src/app/services/app-settings.service.ts" % cwd,
 # nano_
 find_and_replace(
     "%sNault/src/app/components/helpers/nano-account-id/nano-account-id.component.html" % cwd,
-    b"nano_", str.encode(abbreviation))
+    b"nano_", b"%s_" % str.encode(abbreviation))
 
 # representativeAccounts
 representativeAccounts = """  representativeAccounts = [
