@@ -1,127 +1,82 @@
 #!/usr/bin/env python3
 
-import argparse
-import os
-import re
-import shutil
-import subprocess
 import logging
+import os
 
-log_level = os.environ.get('LOGGING', default="INFO")
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=log_level)
-
-
-def remove_prefix(text, prefix):
-    return text[len(prefix):] if text.startswith(prefix) else text
-
-
-cwd = "./"
-logging.debug(cwd)
-if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
-    cwd = "/drone/src/"
-
-
-def get_env_variable(env):
-    if not os.environ.get(env, None):
-        return logging.error("%s is not defined!" % env)
-    else:
-        logging.debug("%s properly set." % env)
-        return os.environ.get(env)
-
+import rebrand_lib as lib
 
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
-abbreviation = get_env_variable('ABBREVIATION')
+abbreviation = lib.get_env_variable('ABBREVIATION')
 
 # Visible name of the block chain
-block_name = get_env_variable('BLOCK_NAME')
+block_name = lib.get_env_variable('BLOCK_NAME')
 
 # Public key of canary account for beta environment
-canary_beta_public_key = get_env_variable('CANARY_BETA_PUBLIC_KEY')
+canary_beta_public_key = lib.get_env_variable('CANARY_BETA_PUBLIC_KEY')
 
 # Public key of canary account for live environment
-canary_live_public_key = get_env_variable('CANARY_LIVE_PUBLIC_KEY')
+canary_live_public_key = lib.get_env_variable('CANARY_LIVE_PUBLIC_KEY')
 
 # Public key of canary account for live environment
-canary_test_public_key = get_env_variable('CANARY_TEST_PUBLIC_KEY')
+canary_test_public_key = lib.get_env_variable('CANARY_TEST_PUBLIC_KEY')
 
-custom_domain = get_env_variable('CUSTOM_DOMAIN')
+custom_domain = lib.get_env_variable('CUSTOM_DOMAIN')
 
 # Fully qualified domain name for official nodes / representatives"
 # "Example: korcoin.net"
-domain = get_env_variable('DOMAIN')
-domainsvc = get_env_variable('DOMAINSVC')
-
+domain = lib.get_env_variable('DOMAIN')
+domainsvc = lib.get_env_variable('DOMAINSVC')
 
 # Public key of faucet account
-faucet_public_key = get_env_variable('FAUCET_PUBLIC_KEY')
+faucet_public_key = lib.get_env_variable('FAUCET_PUBLIC_KEY')
 
 # Public key of landing account
-landing_public_key = get_env_variable('LANDING_PUBLIC_KEY')
+landing_public_key = lib.get_env_variable('LANDING_PUBLIC_KEY')
 
 # Genesis public account data for dev environment
-genesis_dev_public_key = get_env_variable('GENESIS_DEV_PUBLIC_KEY')
-genesis_dev_private_key = get_env_variable('GENESIS_DEV_PRIVATE_KEY')
-genesis_dev_account = get_env_variable('GENESIS_DEV_ACCOUNT')
-genesis_dev_work = get_env_variable('GENESIS_DEV_WORK')
-genesis_dev_signature = get_env_variable('GENESIS_DEV_SIGNATURE')
+genesis_dev_public_key = lib.get_env_variable('GENESIS_DEV_PUBLIC_KEY')
+genesis_dev_private_key = lib.get_env_variable('GENESIS_DEV_PRIVATE_KEY')
+genesis_dev_account = lib.get_env_variable('GENESIS_DEV_ACCOUNT')
+genesis_dev_work = lib.get_env_variable('GENESIS_DEV_WORK')
+genesis_dev_signature = lib.get_env_variable('GENESIS_DEV_SIGNATURE')
 
 # Genesis public account data for beta environment
-genesis_beta_public_key = get_env_variable('GENESIS_BETA_PUBLIC_KEY')
-genesis_beta_account = get_env_variable('GENESIS_BETA_ACCOUNT')
-genesis_beta_work = get_env_variable('GENESIS_BETA_WORK')
-genesis_beta_signature = get_env_variable('GENESIS_BETA_SIGNATURE')
+genesis_beta_public_key = lib.get_env_variable('GENESIS_BETA_PUBLIC_KEY')
+genesis_beta_account = lib.get_env_variable('GENESIS_BETA_ACCOUNT')
+genesis_beta_work = lib.get_env_variable('GENESIS_BETA_WORK')
+genesis_beta_signature = lib.get_env_variable('GENESIS_BETA_SIGNATURE')
 
 # Genesis public account data for live environment
-genesis_live_public_key = get_env_variable('GENESIS_LIVE_PUBLIC_KEY')
-genesis_live_account = get_env_variable('GENESIS_LIVE_ACCOUNT')
-genesis_live_work = get_env_variable('GENESIS_LIVE_WORK')
-genesis_live_signature = get_env_variable('GENESIS_LIVE_SIGNATURE')
+genesis_live_public_key = lib.get_env_variable('GENESIS_LIVE_PUBLIC_KEY')
+genesis_live_account = lib.get_env_variable('GENESIS_LIVE_ACCOUNT')
+genesis_live_work = lib.get_env_variable('GENESIS_LIVE_WORK')
+genesis_live_signature = lib.get_env_variable('GENESIS_LIVE_SIGNATURE')
 
 # Genesis public account data for test environment
-genesis_test_public_key = get_env_variable('GENESIS_TEST_PUBLIC_KEY')
-genesis_test_account = get_env_variable('GENESIS_TEST_ACCOUNT')
-genesis_test_work = get_env_variable('GENESIS_TEST_WORK')
-genesis_test_signature = get_env_variable('GENESIS_TEST_SIGNATURE')
+genesis_test_public_key = lib.get_env_variable('GENESIS_TEST_PUBLIC_KEY')
+genesis_test_account = lib.get_env_variable('GENESIS_TEST_ACCOUNT')
+genesis_test_work = lib.get_env_variable('GENESIS_TEST_WORK')
+genesis_test_signature = lib.get_env_variable('GENESIS_TEST_SIGNATURE')
 
-live_pre_configured_rep0 = get_env_variable('LIVE_PRE_CONFIGURED_REP0')
-live_pre_configured_rep1 = get_env_variable('LIVE_PRE_CONFIGURED_REP1')
-live_pre_configured_rep2 = get_env_variable('LIVE_PRE_CONFIGURED_REP2')
-live_pre_configured_rep3 = get_env_variable('LIVE_PRE_CONFIGURED_REP3')
-live_pre_configured_rep4 = get_env_variable('LIVE_PRE_CONFIGURED_REP4')
-live_pre_configured_rep5 = get_env_variable('LIVE_PRE_CONFIGURED_REP5')
-live_pre_configured_rep6 = get_env_variable('LIVE_PRE_CONFIGURED_REP6')
-live_pre_configured_rep7 = get_env_variable('LIVE_PRE_CONFIGURED_REP7')
+live_pre_configured_rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP0')
+live_pre_configured_rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP1')
+live_pre_configured_rep2 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP2')
+live_pre_configured_rep3 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP3')
+live_pre_configured_rep4 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP4')
+live_pre_configured_rep5 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP5')
+live_pre_configured_rep6 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP6')
+live_pre_configured_rep7 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP7')
 
-live_node_peering_port = get_env_variable('LIVE_NODE_PEERING_PORT')
-beta_node_peering_port = get_env_variable('BETA_NODE_PEERING_PORT')
-test_node_peering_port = get_env_variable('TEST_NODE_PEERING_PORT')
+live_node_peering_port = lib.get_env_variable('LIVE_NODE_PEERING_PORT')
+beta_node_peering_port = lib.get_env_variable('BETA_NODE_PEERING_PORT')
+test_node_peering_port = lib.get_env_variable('TEST_NODE_PEERING_PORT')
 
-live_rpc_port = get_env_variable('LIVE_RPC_PORT')
-beta_rpc_port = get_env_variable('BETA_RPC_PORT')
-test_rpc_port = get_env_variable('TEST_RPC_PORT')
+live_rpc_port = lib.get_env_variable('LIVE_RPC_PORT')
+beta_rpc_port = lib.get_env_variable('BETA_RPC_PORT')
+test_rpc_port = lib.get_env_variable('TEST_RPC_PORT')
 
 # number of peers
-number_of_peers = get_env_variable('NUMBER_OF_PEERS')
-
-main_desc = "Script to rebrand nano-node as new block chain." \
-            "Example: " \
-            "rebrand.py"
-
-# Initiate the parser
-parser = argparse.ArgumentParser(description=main_desc)
-
-# debug
-parser.add_argument("--debug", help="Enable debug", action="store_true")
-
-# version arg
-parser.add_argument("-V", "--version", help="Shows version", action="store_true")
-
-# Read arguments from the command line
-args = parser.parse_args()
-
-# Check for --version or -V
-if args.version:
-    print("V22.0_0.0.1")
+number_of_peers = lib.get_env_variable('NUMBER_OF_PEERS')
 
 accounts = [
     # nano/core_test/block.cpp .account_address
@@ -193,9 +148,9 @@ canary_public_keys = [
 ]
 
 dirs = [
-    ["%snano-node/nano/nano_node" % cwd, "%snano-node/nano/%s_node" % (cwd, abbreviation)],
-    ["%snano-node/nano/nano_rpc" % cwd, "%snano-node/nano/%s_rpc" % (cwd, abbreviation)],
-    ["%snano-node/nano/nano_wallet" % cwd, "%snano-node/nano/%s_wallet" % (cwd, abbreviation)],
+    ["%snano-node/nano/nano_node" % lib.cwd(), "%snano-node/nano/%s_node" % (lib.cwd(), abbreviation)],
+    ["%snano-node/nano/nano_rpc" % lib.cwd(), "%snano-node/nano/%s_rpc" % (lib.cwd(), abbreviation)],
+    ["%snano-node/nano/nano_wallet" % lib.cwd(), "%snano-node/nano/%s_wallet" % (lib.cwd(), abbreviation)],
 ]
 
 landing_faucet_keys = [
@@ -267,32 +222,36 @@ genesis_dev_data = [
     [b"B0311EA55708D6A53C75CDBF88300259C6D018522FE3D4D0A242E431F9E8B6D0", b"%s" % str.encode(genesis_dev_public_key)],
     [b"xrb_3e3j5tkog48pnny9dmfzj1r16pg8t1e76dz5tmac6iq689wyjfpiij4txtdo", b"%s" % str.encode(genesis_dev_account)],
     [b"7b42a00ee91d5810", b"%s" % str.encode(genesis_dev_work)],
-    [b"ECDA914373A2F0CA1296475BAEE40500A7F0A7AD72A5A80C81D7FAB7F6C802B2CC7DB50F5DD0FB25B2EF11761FA7344A158DD5A700B21BD47DE5BD0F63153A02",
-     b"%s" % str.encode(genesis_dev_signature)]
+    [
+        b"ECDA914373A2F0CA1296475BAEE40500A7F0A7AD72A5A80C81D7FAB7F6C802B2CC7DB50F5DD0FB25B2EF11761FA7344A158DD5A700B21BD47DE5BD0F63153A02",
+        b"%s" % str.encode(genesis_dev_signature)]
 ]
 
 genesis_beta_data = [
     [b"259A43ABDB779E97452E188BA3EB951B41C961D3318CA6B925380F4D99F0577A", b"%s" % str.encode(genesis_beta_public_key)],
     [b"nano_1betagoxpxwykx4kw86dnhosc8t3s7ix8eeentwkcg1hbpez1outjrcyg4n1", b"%s" % str.encode(genesis_beta_account)],
     [b"79d4e27dc873c6f2", b"%s" % str.encode(genesis_beta_work)],
-    [b"4BD7F96F9ED2721BCEE5EAED400EA50AD00524C629AE55E9AFF11220D2C1B00C3D4B3BB770BF67D4F8658023B677F91110193B6C101C2666931F57046A6DB806",
-     b"%s" % str.encode(genesis_beta_signature)]
+    [
+        b"4BD7F96F9ED2721BCEE5EAED400EA50AD00524C629AE55E9AFF11220D2C1B00C3D4B3BB770BF67D4F8658023B677F91110193B6C101C2666931F57046A6DB806",
+        b"%s" % str.encode(genesis_beta_signature)]
 ]
 
 genesis_live_data = [
     [b"E89208DD038FBB269987689621D52292AE9C35941A7484756ECCED92A65093BA", b"%s" % str.encode(genesis_live_public_key)],
     [b"xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3", b"%s" % str.encode(genesis_live_account)],
     [b"62f05417dd3fb691", b"%s" % str.encode(genesis_live_work)],
-    [b"9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
-     b"%s" % str.encode(genesis_live_signature)]
+    [
+        b"9F0C933C8ADE004D808EA1985FA746A7E95BA2A38F867640F53EC8F180BDFE9E2C1268DEAD7C2664F356E37ABA362BC58E46DBA03E523A7B5A19E4B6EB12BB02",
+        b"%s" % str.encode(genesis_live_signature)]
 ]
 
 genesis_test_data = [
     [b"45C6FF9D1706D61F0821327752671BDA9F9ED2DA40326B01935AB566FB9E08ED", b"%s" % str.encode(genesis_live_public_key)],
     [b"nano_1jg8zygjg3pp5w644emqcbmjqpnzmubfni3kfe1s8pooeuxsw49fdq1mco9j", b"%s" % str.encode(genesis_live_account)],
     [b"bc1ef279c1a34eb1", b"%s" % str.encode(genesis_live_work)],
-    [b"15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3C0EE11449232B143B6E07170E",
-     b"%s" % str.encode(genesis_live_signature)]
+    [
+        b"15049467CAEE3EC768639E8E35792399B6078DA763DA4EBA8ECAD33B0EDC4AF2E7403893A5A602EB89B978DABEF1D6606BB00F3C0EE11449232B143B6E07170E",
+        b"%s" % str.encode(genesis_live_signature)]
 ]
 
 live_preconf_reps = [
@@ -342,10 +301,10 @@ if custom_domain == "false":
         [b"https://chat.nano.org", b"https://%s-chat.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"https://content.nano.org", b"https://%s-content.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"peering-beta.nano.org", b"%s-peering-beta.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
-        #[b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        # [b"peering.nano.org", b"%s-peering.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"peering-test.nano.org", b"%s-peering-test.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
         [b"repo.nano.org", b"%s-repo.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
-        #[b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+        # [b"nano.org", b"%s.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
     ]
     logging.debug(urls)
 
@@ -406,207 +365,169 @@ words = [
     [b"Nano", b"%s" % str.encode(abbreviation[0].upper() + abbreviation[1:])],
 ]
 
-
-def key_create(a):
-    lines = []
-    proc = subprocess.Popen(['%snano-node-22.0.0-Linux/bin/nano_node' % cwd, '--key_create'], stdout=subprocess.PIPE)
-    while True:
-        line = proc.stdout.readline()
-        if not line:
-            break
-        lines.append(str(line.rstrip()))
-
-    private = lines[0].split(": ")[1].rstrip("'")
-    public = lines[1].split(": ")[1].rstrip("'")
-    account = lines[2].split(": ")[1].rstrip("'").replace("nano_", a)
-
-    return print('''{
-    "private": "%s",
-    "public": "%s",
-    "account": "%s"
-}
-    ''' % (private, public, account))
-
-
-def is_ignored(f, w_list):
-    if args.debug:
-        print("f: %s" % f)
-        print("Ignored words: %s" % w_list)
-
-    if w_list is not None:
-        if re.compile('|'.join(w_list)).search(f):
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
-def find_and_replace(filename, find, replace):
-    with open(filename, "rb") as orig_file_obj:
-        with open("%s.tmp" % filename, "wb") as new_file_obj:
-            orig_text = orig_file_obj.read()
-            new_text = orig_text.replace(find, replace)
-            new_file_obj.write(new_text)
-
-    shutil.copyfile("%s.tmp" % filename, filename)
-    os.remove("%s.tmp" % filename)
-
-
-def replace_all(data):
-    for dirname, dirs, files in os.walk(cwd+"/nano-node"):
-        for file_name in files:
-            filepath = os.path.join(dirname, file_name)
-
-            for x in data:
-                if is_ignored(filepath, ignore_list):
-                    logging.debug("IGNORED %s" % filepath)
-                else:
-                    find_and_replace(filepath, x[0], x[1])
-
-
 # rename directories
-for d in dirs:
-    if os.path.exists(d[0]):
-        os.rename(d[0], d[1])
+lib.rename_dirs(dirs)
 
 # replace word
-replace_all(words)
+lib.replace_all(words, ignore_list)
 
 # replace urls
-replace_all(urls)
+lib.replace_all(urls, ignore_list)
 
 # replace dev_genesis_data
 for data in genesis_dev_data:
-    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
+    lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(), data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace beta_genesis_data
 for data in genesis_beta_data:
-    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
+    lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(), data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace live_genesis_data
 for data in genesis_live_data:
-    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
+    lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(), data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace test_genesis_data
 for data in genesis_test_data:
-    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, data[0], data[1])
+    lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(), data[0], data[1])
     logging.debug("Found %s" % data[0])
     logging.debug("Replaced %s" % data[1])
 
 # replace accounts
-replace_all(accounts)
+lib.replace_all(accounts)
 
 # replace landing / faucet account
 for key in landing_faucet_keys:
-    find_and_replace("%snano-node/nano/node/json_handler.cpp" % cwd, key[0], key[1])
+    lib.find_and_replace("%snano-node/nano/node/json_handler.cpp" % lib.cwd(), key[0], key[1])
 
 # replace live preconfigured representative
 for rep in live_preconf_reps:
-    find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd, rep[0], rep[1])
+    lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(), rep[0], rep[1])
 
 # replace canary public keys
 for key in canary_public_keys:
-    find_and_replace("%snano-node/nano/secure/common.cpp" % cwd, key[0], key[1])
+    lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(), key[0], key[1])
 
 list_abbreviation = list(abbreviation)
 
 # replace _onan
-find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
-                 b'destination_a.append ("_onan"); // nano_',
-                 b'destination_a.append ("_%s"); // %s_' % (str.encode(''.join(list_abbreviation[::-1])),
-                                                            str.encode(abbreviation))
-                 )
+lib.find_and_replace("%snano-node/nano/lib/numbers.cpp" % lib.cwd(),
+                     b'destination_a.append ("_onan"); // nano_',
+                     b'destination_a.append ("_%s"); // %s_' % (str.encode(''.join(list_abbreviation[::-1])),
+                                                                str.encode(abbreviation))
+                     )
 
 # replace xrb_ prefix
-find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
-                 b"auto xrb_prefix (source_a[0] == 'x' && source_a[1] == 'r' && source_a[2] == 'b' && (source_a[3] == "
-                 b"'_' || source_a[3] == '-'));",
-                 b"auto xrb_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && (source_a[3] "
-                 b"== '_' || source_a[3] == '-'));" % (str.encode(list_abbreviation[0]),
-                                                       str.encode(list_abbreviation[1]),
-                                                       str.encode(list_abbreviation[2]))
-                 )
+lib.find_and_replace("%snano-node/nano/lib/numbers.cpp" % lib.cwd(),
+     b"auto xrb_prefix (source_a[0] == 'x' && source_a[1] == 'r' && source_a[2] == 'b' && (source_a[3] == "
+     b"'_' || source_a[3] == '-'));",
+     b"auto xrb_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && (source_a[3] "
+     b"== '_' || source_a[3] == '-'));" % (str.encode(list_abbreviation[0]),
+                                           str.encode(list_abbreviation[1]),
+                                           str.encode(list_abbreviation[2]))
+     )
 
 if len(list_abbreviation) == 3:
     # replace nano_ prefix
-    find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
-                     b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
-                     b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
-                     b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
-                     b"== 'c' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
-                                                                                  str.encode(list_abbreviation[1]),
-                                                                                  str.encode(list_abbreviation[2]))
-                     )
+    lib.find_and_replace("%snano-node/nano/lib/numbers.cpp" % lib.cwd(),
+         b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
+         b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
+         b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
+         b"== 'c' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
+                                                                      str.encode(list_abbreviation[1]),
+                                                                      str.encode(list_abbreviation[2]))
+         )
 else:
     # replace nano_ prefix
-    find_and_replace("%snano-node/nano/lib/numbers.cpp" % cwd,
-                     b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
-                     b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
-                     b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
-                     b"== '%s' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
-                                                                                   str.encode(list_abbreviation[1]),
-                                                                                   str.encode(list_abbreviation[2]),
-                                                                                   str.encode(list_abbreviation[3]))
-                     )
+    lib.find_and_replace("%snano-node/nano/lib/numbers.cpp" % lib.cwd(),
+         b"auto nano_prefix (source_a[0] == 'n' && source_a[1] == 'a' && source_a[2] == 'n' && source_a[3] == "
+         b"'o' && (source_a[4] == '_' || source_a[4] == '-'));",
+         b"auto nano_prefix (source_a[0] == '%s' && source_a[1] == '%s' && source_a[2] == '%s' && source_a[3] "
+         b"== '%s' && (source_a[4] == '_' || source_a[4] == '-'));" % (str.encode(list_abbreviation[0]),
+                                                                       str.encode(list_abbreviation[1]),
+                                                                       str.encode(list_abbreviation[2]),
+                                                                       str.encode(list_abbreviation[3]))
+         )
 
 # build.sh
-find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"nano-node", b"%s-node" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/entry.sh" % lib.cwd(), b"nano-node",
+                     b"%s-node" % str.encode(abbreviation))
 
 # Dockerfile
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_node", b"make %s_node" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_rpc", b"make %s_rpc" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"make nano_pow_server", b"make %s_pow_server" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
-                 b"RUN groupadd --gid 1000 nanocurrency",
-                 b"RUN groupadd --gid 1000 %scurrency" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
-                 b"useradd --uid 1000 --gid nanocurrency",
-                 b"useradd --uid 1000 --gid %scurrency" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd,
-                 b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home nanocurrency",
-                 b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home %scurrency" %
-                 str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"/tmp/build/nano_", b"/tmp/build/%s_" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"/usr/bin/nano_node", b"/usr/bin/%s_node" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/Dockerfile" % cwd, b"\"nano_node\"", b"\"%s_node\"" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"make nano_node",
+                     b"make %s_node" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"make nano_rpc",
+                     b"make %s_rpc" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"make nano_pow_server",
+                     b"make %s_pow_server" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(),
+                     b"RUN groupadd --gid 1000 nanocurrency",
+                     b"RUN groupadd --gid 1000 %scurrency" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(),
+                     b"useradd --uid 1000 --gid nanocurrency",
+                     b"useradd --uid 1000 --gid %scurrency" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(),
+                     b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home nanocurrency",
+                     b"useradd --uid 1000 --gid nanocurrency --shell /bin/bash --create-home %scurrency" %
+                     str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"/tmp/build/nano_",
+                     b"/tmp/build/%s_" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"/usr/bin/nano_node",
+                     b"/usr/bin/%s_node" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/Dockerfile" % lib.cwd(), b"\"nano_node\"",
+                     b"\"%s_node\"" % str.encode(abbreviation))
 
 # entry.sh
-find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"nano_node", b"%s_node" % str.encode(abbreviation))
-find_and_replace("%snano-node/docker/node/entry.sh" % cwd, b"/Nano", b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
+lib.find_and_replace("%snano-node/docker/node/entry.sh" % lib.cwd(), b"nano_node",
+                     b"%s_node" % str.encode(abbreviation))
+lib.find_and_replace("%snano-node/docker/node/entry.sh" % lib.cwd(), b"/Nano",
+                     b"/%s" % str.encode(abbreviation[0].upper() + abbreviation[1:]))
 
 # rename nano_pow_server.cpp
-if os.path.exists("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % cwd):
-    os.rename("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % cwd, "%snano-node/nano-pow-server/src/entry/kor_pow_server.cpp" % cwd)
+if os.path.exists("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % lib.cwd()):
+    os.rename("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % lib.cwd(),
+              "%snano-node/nano-pow-server/src/entry/kor_pow_server.cpp" % lib.cwd())
 
 # replace ports
 # node
-find_and_replace("%snano-node/nano/core_test/toml.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"54000", b"%s" % str.encode(beta_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
-find_and_replace("%snano-node/nano/lib/config.hpp" % cwd, b"44000", b"%s" % str.encode(test_node_peering_port))
-find_and_replace("%snano-node/nano/qt/qt.cpp" % cwd, b"7075", b"%s" % str.encode(live_node_peering_port))
+lib.find_and_replace("%snano-node/nano/core_test/toml.cpp" % lib.cwd(),
+                     b"7075", b"%s" % str.encode(live_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"7075", b"%s" % str.encode(live_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.hpp" % lib.cwd(),
+                     b"7075", b"%s" % str.encode(live_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"54000", b"%s" % str.encode(beta_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.hpp" % lib.cwd(),
+                     b"54000", b"%s" % str.encode(beta_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"44000", b"%s" % str.encode(test_node_peering_port))
+lib.find_and_replace("%snano-node/nano/lib/config.hpp" % lib.cwd(),
+                     b"44000", b"%s" % str.encode(test_node_peering_port))
+lib.find_and_replace("%snano-node/nano/qt/qt.cpp" % lib.cwd(),
+                     b"7075", b"%s" % str.encode(live_node_peering_port))
 
-#rpc
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
-find_and_replace("%snano-node/ci/record_rep_weights.py" % cwd, b"7076", b"%s" % str.encode(live_rpc_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"17076", b"1%s" % str.encode(live_rpc_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"55000", b"%s" % str.encode(beta_rpc_port))
-find_and_replace("%snano-node/nano/lib/config.cpp" % cwd, b"45000", b"%s" % str.encode(test_rpc_port))
+# rpc
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"7076", b"%s" % str.encode(live_rpc_port))
+lib.find_and_replace("%snano-node/ci/record_rep_weights.py" % lib.cwd(),
+                     b"7076", b"%s" % str.encode(live_rpc_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"17076", b"1%s" % str.encode(live_rpc_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"55000", b"%s" % str.encode(beta_rpc_port))
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"45000", b"%s" % str.encode(test_rpc_port))
 
 # replace peering
-find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
-                 b'const char * default_live_peer_network = "peering.nano.org";',
-                 b"%s" % str.encode(peers.strip()))
-find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % cwd,
-                 b'preconfigured_peers.push_back (default_live_peer_network);',
-                 b"%s" % str.encode(preconfigured_peers.strip()))
+lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(),
+                     b'const char * default_live_peer_network = "peering.nano.org";',
+                     b"%s" % str.encode(peers.strip()))
+lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(),
+                     b'preconfigured_peers.push_back (default_live_peer_network);',
+                     b"%s" % str.encode(preconfigured_peers.strip()))
