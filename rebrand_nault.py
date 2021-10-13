@@ -174,12 +174,12 @@ serverOptionsReplace = """  serverOptions = [
     }}
   ];""".format(abr=abbreviation, dsvc=domainsvc)
 # serverOptions
-lib.find_and_replace("%sNault/src/app/services/app-settings.service.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/services/app-settings.service.ts" % lib.cwd(),
                  str.encode(serverOptions), str.encode(serverOptionsReplace))
 
 # nano_
 lib.find_and_replace(
-    "%sNault/src/app/components/helpers/nano-account-id/nano-account-id.component.html" % lib.cwd,
+    "%sNault/src/app/components/helpers/nano-account-id/nano-account-id.component.html" % lib.cwd(),
     b"nano_", b"%s_" % str.encode(abbreviation))
 
 # representativeAccounts
@@ -196,7 +196,7 @@ representativeAccountsReplace = """  representativeAccounts = [
     '{rep0}',
     '{rep1}',
   ];""".format(rep0=rep0, rep1=rep1)
-lib.find_and_replace("%sNault/src/app/services/nano-block.service.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/services/nano-block.service.ts" % lib.cwd(),
                  str.encode(representativeAccounts),
                  str.encode(representativeAccountsReplace))
 
@@ -256,7 +256,7 @@ defaultRepresentativesReplace = """  defaultRepresentatives = [
       warn: false,
     }},
   ];""".format(rep0=rep0, rep1=rep1)
-lib.find_and_replace("%sNault/src/app/services/representative.service.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/services/representative.service.ts" % lib.cwd(),
                  str.encode(defaultRepresentatives),
                  str.encode(defaultRepresentativesReplace))
 amounts = """  amounts = [
@@ -270,38 +270,38 @@ amountsReplace = """  amounts = [
     {{ name: '{abr}', shortName: 'nano', value: 'nano' }},
   ];""".format(abr=abbreviation, abr_cap=abbreviation.upper())
 lib.find_and_replace(
-    "%sNault/src/app/components/account-details/account-details.component.ts" % lib.cwd,
+    "%sNault/src/app/components/account-details/account-details.component.ts" % lib.cwd(),
     str.encode(amounts),
     str.encode(amountsReplace))
 lib.find_and_replace(
-    "%sNault/src/app/components/send/send.component.ts" % lib.cwd,
+    "%sNault/src/app/components/send/send.component.ts" % lib.cwd(),
     str.encode(amounts),
     str.encode(amountsReplace))
 
 isValidNanoAccount = "( searchData.startsWith('xrb_') || searchData.startsWith('nano_')"
 isValidNanoAccountReplace = "( searchData.startsWith('{abr}_') )".format(abr=abbreviation)
 lib.find_and_replace(
-    "%sNault/src/app/app.component.ts" % lib.cwd,
+    "%sNault/src/app/app.component.ts" % lib.cwd(),
     str.encode(isValidNanoAccount),
     str.encode(isValidNanoAccountReplace))
 
 
 nanoAccountID = "replace('nano_', '')"
 nanoAccountIDReplace = "replace('nano_', '').replace('{abr}_', '')".format(abr=abbreviation)
-lib.find_and_replace("%sNault/src/app/components/helpers/nano-account-id/nano-account-id.component.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/components/helpers/nano-account-id/nano-account-id.component.ts" % lib.cwd(),
                  str.encode(nanoAccountID),
                  str.encode(nanoAccountIDReplace))
 
 
 musigService = "!address.startsWith('xrb_') && !address.startsWith('nano_')"
 musigServiceReplace = "!address.startsWith('{abr}_')".format(abr=abbreviation)
-lib.find_and_replace("%sNault/src/app/services/musig.service.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/services/musig.service.ts" % lib.cwd(),
                  str.encode(musigService),
                  str.encode(musigServiceReplace))
 
 musigService2 = "const fullAddressFinal = 'nano_' + base32.encode(fullAddress);"
 musigService2Replace = "const fullAddressFinal = '{abr}_' + base32.encode(fullAddress);"\
                         .format(abr=abbreviation)
-lib.find_and_replace("%sNault/src/app/services/musig.service.ts" % lib.cwd,
+lib.find_and_replace("%sNault/src/app/services/musig.service.ts" % lib.cwd(),
                  str.encode(musigService2),
                  str.encode(musigService2Replace))
