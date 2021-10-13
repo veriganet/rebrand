@@ -33,10 +33,6 @@ def remove_prefix(text, prefix):
     return text[len(prefix):] if text.startswith(prefix) else text
 
 
-cwd = "./"
-logging.debug(cwd)
-
-
 def cwd(directory="./"):
     logging.debug(directory)
     if os.environ.get("CI") == "true" and os.environ.get("DRONE") == "true":
