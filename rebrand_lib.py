@@ -94,7 +94,7 @@ def find_and_replace(filename, find, replace):
     os.remove("%s.tmp" % filename)
 
 
-def replace_all(data, ignore_list, nano_node):
+def replace_all(data, ignore_list, nano_node=""):
     for dirname, dirs, files in os.walk(cwd()+nano_node):
         for file_name in files:
             filepath = os.path.join(dirname, file_name)
