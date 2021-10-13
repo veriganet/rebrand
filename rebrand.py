@@ -369,10 +369,10 @@ words = [
 lib.rename_dirs(dirs)
 
 # replace word
-lib.replace_all(words, ignore_list)
+lib.replace_all(words, ignore_list, nano_node="/nano-node")
 
 # replace urls
-lib.replace_all(urls, ignore_list)
+lib.replace_all(urls, ignore_list, nano_node="/nano-node")
 
 # replace dev_genesis_data
 for data in genesis_dev_data:
@@ -399,7 +399,7 @@ for data in genesis_test_data:
     logging.debug("Replaced %s" % data[1])
 
 # replace accounts
-lib.replace_all(accounts)
+lib.replace_all(accounts, ignore_list)
 
 # replace landing / faucet account
 for key in landing_faucet_keys:

@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 
-import logging
-import os
-
 import rebrand_lib as lib
-
-
 
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
 abbreviation = lib.get_env_variable('ABBREVIATION')
