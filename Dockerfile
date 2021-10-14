@@ -7,6 +7,3 @@ RUN chmod +x /usr/local/bin/rebrand
 
 ADD rebrand_nault.py /usr/local/bin/rebrand-nault
 RUN chmod +x /usr/local/bin/rebrand-nault
-
-ADD rebrand_nanocurrency_js.py /usr/local/bin/rebrand-nanocurrency-js
-RUN chmod +x /usr/local/bin/rebrand-nanocurrency-js
