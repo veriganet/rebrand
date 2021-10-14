@@ -369,10 +369,10 @@ words = [
 lib.rename_dirs(dirs)
 
 # replace word
-lib.replace_all(words, ignore_list, nano_node="/nano-node")
+lib.replace_all(words, ignore_list, "/nano-node")
 
 # replace urls
-lib.replace_all(urls, ignore_list, nano_node="/nano-node")
+lib.replace_all(urls, ignore_list, "/nano-node")
 
 # replace dev_genesis_data
 for data in genesis_dev_data:

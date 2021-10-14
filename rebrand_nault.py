@@ -57,7 +57,7 @@ words = [
     [b"Wrong nano address", b"Wrong %s address" % str.encode(abbreviation)],
     [b"Invalid nano address", b"Invalid %s address" % str.encode(abbreviation)],
 ]
-lib.replace_all(words, ignore_list)
+lib.replace_all(words, ignore_list, "/Nault")
 
 serverOptions = """  serverOptions = [
     {
