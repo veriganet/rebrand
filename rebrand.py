@@ -399,7 +399,7 @@ for data in genesis_test_data:
     logging.debug("Replaced %s" % data[1])
 
 # replace accounts
-lib.replace_all(accounts, ignore_list)
+lib.replace_all(accounts, ignore_list, "nano-node")
 
 # replace landing / faucet account
 for key in landing_faucet_keys:

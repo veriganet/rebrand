@@ -300,3 +300,10 @@ musigService2Replace = "const fullAddressFinal = '{abr}_' + base32.encode(fullAd
 lib.find_and_replace("%sNault/src/app/services/musig.service.ts" % lib.cwd(),
                  str.encode(musigService2),
                  str.encode(musigService2Replace))
+
+getPublicAccountID = "function getPublicAccountID(accountPublicKeyBytes, prefix = 'nano')"
+getPublicAccountIDReplace = "function getPublicAccountID(accountPublicKeyBytes, prefix = '%s')"\
+    % abbreviation
+lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
+                 str.encode(getPublicAccountID),
+                 str.encode(getPublicAccountIDReplace))
