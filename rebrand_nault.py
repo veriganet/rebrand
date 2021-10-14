@@ -273,8 +273,8 @@ lib.find_and_replace(
     str.encode(amounts),
     str.encode(amountsReplace))
 
-isValidNanoAccount = "( searchData.startsWith('xrb_') || searchData.startsWith('nano_')"
-isValidNanoAccountReplace = "( searchData.startsWith('{abr}_') )".format(abr=abbreviation)
+isValidNanoAccount = "        ( searchData.startsWith('xrb_') || searchData.startsWith('nano_') )"
+isValidNanoAccountReplace = "        ( searchData.startsWith('{abr}_') )".format(abr=abbreviation)
 lib.find_and_replace(
     "%sNault/src/app/app.component.ts" % lib.cwd(),
     str.encode(isValidNanoAccount),
