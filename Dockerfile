@@ -7,3 +7,6 @@ RUN chmod +x /usr/local/bin/rebrand
 
 ADD rebrand_nault.py /usr/local/bin/rebrand-nault
 RUN chmod +x /usr/local/bin/rebrand-nault
+
+ADD rebrand_ninja.py /usr/local/bin/rebrand-ninja
+RUN chmod +x /usr/local/bin/rebrand-ninja
