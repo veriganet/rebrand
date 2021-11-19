@@ -20,11 +20,11 @@ canary_live_public_key = lib.get_env_variable('CANARY_LIVE_PUBLIC_KEY')
 # Public key of canary account for live environment
 canary_test_public_key = lib.get_env_variable('CANARY_TEST_PUBLIC_KEY')
 
-custom_domain = lib.get_env_variable('CUSTOM_DOMAIN')
+enable_custom_domain = lib.get_env_variable('ENABLE_CUSTOM_DOMAIN')
 
 # Fully qualified domain name for official nodes / representatives"
 # "Example: korcoin.net"
-domain = lib.get_env_variable('DOMAIN')
+custom_domain = lib.get_env_variable('CUSTOM_DOMAIN')
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
 # Public key of faucet account
@@ -289,7 +289,7 @@ live_preconf_reps = [
     ]
 ]
 
-if custom_domain == "false":
+if enable_custom_domain == "false":
     logging.debug("Custom domain is not set. Using %s" % domainsvc)
     urls = [
         [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
@@ -318,28 +318,28 @@ if custom_domain == "false":
     logging.debug(peers)
     logging.debug(preconfigured_peers)
 else:
-    logging.debug("Custom domain is set. Using %s" % domain)
+    logging.debug("Custom domain is set. Using %s" % custom_domain)
     urls = [
-        [b"security@nano.org", b"security@%s" % str.encode(domain)],
-        [b"info@nano.org", b"info@%s" % str.encode(domain)],
-        [b"russel@nano.org", b"contact@%s" % str.encode(domain)],
-        [b"https://nano.org", b"https://%s" % str.encode(domain)],
-        [b"https://nano.org/", b"https://%s/" % str.encode(domain)],
-        [b"https://docs.nano.org", b"https://docs.%s" % str.encode(domain)],
-        [b"https://chat.nano.org", b"https://chat.%s" % str.encode(domain)],
-        [b"https://content.nano.org", b"https://content.%s" % str.encode(domain)],
-        [b"peering-beta.nano.org", b"peering-beta.%s" % str.encode(domain)],
-        [b"peering.nano.org", b"peering.%s" % str.encode(domain)],
-        [b"peering-test.nano.org", b"peering-test.%s" % str.encode(domain)],
-        [b"repo.nano.org", b"repo.%s" % str.encode(domain)],
-        [b"nano.org", b"%s" % str.encode(domain)],
+        [b"security@nano.org", b"security@%s" % str.encode(custom_domain)],
+        [b"info@nano.org", b"info@%s" % str.encode(custom_domain)],
+        [b"russel@nano.org", b"contact@%s" % str.encode(custom_domain)],
+        [b"https://nano.org", b"https://%s" % str.encode(custom_domain)],
+        [b"https://nano.org/", b"https://%s/" % str.encode(custom_domain)],
+        [b"https://docs.nano.org", b"https://docs.%s" % str.encode(custom_domain)],
+        [b"https://chat.nano.org", b"https://chat.%s" % str.encode(custom_domain)],
+        [b"https://content.nano.org", b"https://content.%s" % str.encode(custom_domain)],
+        [b"peering-beta.nano.org", b"peering-beta.%s" % str.encode(custom_domain)],
+        [b"peering.nano.org", b"peering.%s" % str.encode(custom_domain)],
+        [b"peering-test.nano.org", b"peering-test.%s" % str.encode(custom_domain)],
+        [b"repo.nano.org", b"repo.%s" % str.encode(custom_domain)],
+        [b"nano.org", b"%s" % str.encode(custom_domain)],
     ]
     logging.debug(urls)
 
     peers = ''
     preconfigured_peers = ""
     for p in range(int(number_of_peers)):
-        peer = "%s-peering%s.%s" % (abbreviation, str(p), domain)
+        peer = "%s-peering%s.%s" % (abbreviation, str(p), custom_domain)
         peers = peers + 'const char * default_live_peer_network%s' % str(p) + ' = "' + peer + '";' + "\n"
         preconfigured_peer = "preconfigured_peers.emplace_back(default_live_peer_network%s);" % str(p)
         preconfigured_peers = preconfigured_peers + preconfigured_peer + "\n"
