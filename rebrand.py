@@ -289,7 +289,7 @@ live_preconf_reps = [
     ]
 ]
 
-if enable_custom_domain == "false":
+if enable_custom_domain == "false" or enable_custom_domain == "False":
     logging.debug("Custom domain is not set. Using %s" % domainsvc)
     urls = [
         [b"security@nano.org", b"%s-security@%s" % (str.encode(abbreviation), str.encode(domainsvc))],
