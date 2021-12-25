@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 .idea
-
 test.py
+nano-node-22.1.0-Linux
+blockchains
+blockchains/*
