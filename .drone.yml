@@ -18,8 +18,9 @@ steps:
     commands:
       - sleep 5 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -t $ECR/rebrand:latest .
+      - docker build -t $ECR/rebrand:latest -t $ECR/rebrand:V22.1 .
       - docker push $ECR/rebrand:latest
+      - docker push $ECR/rebrand:V22.1
     when:
       event:
         - push
