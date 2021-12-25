@@ -491,7 +491,7 @@ lib.find_and_replace("%snano-node/docker/node/entry.sh" % lib.cwd(), b"/Nano",
 # rename nano_pow_server.cpp
 if os.path.exists("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % lib.cwd()):
     os.rename("%snano-node/nano-pow-server/src/entry/nano_pow_server.cpp" % lib.cwd(),
-              "%snano-node/nano-pow-server/src/entry/kor_pow_server.cpp" % lib.cwd())
+              "%snano-node/nano-pow-server/src/entry/%s_pow_server.cpp" % (lib.cwd(), abbreviation))
 
 # replace ports
 # node
