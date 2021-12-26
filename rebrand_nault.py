@@ -307,10 +307,3 @@ getPublicAccountIDReplace = "function getPublicAccountID(accountPublicKeyBytes, 
 lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
                  str.encode(getPublicAccountID),
                  str.encode(getPublicAccountIDReplace))
-
-checkString = "!/^(xrb_|nano_|kor_)[13][13-9a-km-uw-z]{59}$/.test(address as string)"
-checkStringReplace = "!/^(xrb_|nano_|%s_)[13][13-9a-km-uw-z]{59}$/.test(address as string)" % \
-                     abbreviation
-lib.find_and_replace("%snanocurrency-js/packages/nanocurrency/src/parse.ts" % lib.cwd(),
-                 str.encode(checkString),
-                 str.encode(checkStringReplace))
