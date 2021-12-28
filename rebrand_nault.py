@@ -307,3 +307,9 @@ getPublicAccountIDReplace = "function getPublicAccountID(accountPublicKeyBytes, 
 lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
                  str.encode(getPublicAccountID),
                  str.encode(getPublicAccountIDReplace))
+
+utilIsValidAccount = "if (!isValidAccount(account)) {"
+utilIsValidAccountReplace = "if (account !== 'None' && !isValidAccount(account)) {"
+lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
+                 str.encode(utilIsValidAccount),
+                 str.encode(utilIsValidAccountReplace))
