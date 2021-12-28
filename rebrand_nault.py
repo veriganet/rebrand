@@ -8,8 +8,8 @@ abbreviation = lib.get_env_variable('ABBREVIATION')
 # Fully qualified domain name
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
-rep0 = lib.get_env_variable('LIVE_REP0')
-rep1 = lib.get_env_variable('LIVE_REP1')
+rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
+rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
 ignore_list = [
     "build",
