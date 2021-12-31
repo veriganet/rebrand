@@ -59,6 +59,12 @@ words = [
 ]
 lib.replace_all(words, ignore_list, "/Nault")
 
+urls = [
+    [b"mynano.ninja", b"%s-ninja.%s" % (str.encode(abbreviation), str.encode(domainsvc))],
+]
+
+
+
 serverOptions = """  serverOptions = [
     {
       name: 'Random',
@@ -313,3 +319,6 @@ utilIsValidAccountReplace = "if (account !== 'None' && !isValidAccount(account))
 lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
                  str.encode(utilIsValidAccount),
                  str.encode(utilIsValidAccountReplace))
+
+# replace urls
+lib.replace_all(urls, ignore_list, "/Nault")

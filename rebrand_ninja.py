@@ -5,8 +5,8 @@ import rebrand_lib as lib
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
 abbreviation = lib.get_env_variable('ABBREVIATION')
 
-rep0 = lib.get_env_variable('LIVE_REP0')
-rep1 = lib.get_env_variable('LIVE_REP1')
+rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
+rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
 subdir = "/MyNanoNinja"
 
@@ -121,3 +121,4 @@ words = [
     [b"|nano", b"|%s" % str.encode(abbreviation)],
 ]
 lib.replace_all(words, ignore_list, subdir)
+
