@@ -55,11 +55,13 @@ words = [
     [b">XNO<", b">%s<" % str.encode(abbreviation.upper())],
     [b">XNO ", b">%s " % str.encode(abbreviation.upper())],
     [b"XNO ", b"%s " % str.encode(abbreviation.upper())],
+    [b"XNO", b"%s" % str.encode(abbreviation.upper())],
     [b"replace('xrb_', 'nano_')", b"replace('nano_', '%s_')" % str.encode(abbreviation)],
     [b"replace('nano_', 'xrb_')", b"replace('nano_', '%s_')" % str.encode(abbreviation)],
     [b"replace('xrb', 'nano')", b"replace('xrb', '%s')" % str.encode(abbreviation)],
     [b"Wrong nano address", b"Wrong %s address" % str.encode(abbreviation)],
     [b"Invalid nano address", b"Invalid %s address" % str.encode(abbreviation)],
+    [b"Send nano", b"Send %s" % str.encode(abbreviation)],
 ]
 lib.replace_all(words, ignore_list, "/Nault")
 
@@ -297,6 +299,70 @@ addWorkToCashReplace = "this.workPool.addWorkToCache(hash);"
 lib.find_and_replace("%sNault/src/app/services/wallet.service.ts" % lib.cwd(),
                  str.encode(addWorkToCash),
                  str.encode(addWorkToCashReplace))
+
+nfReps = """  nfReps = [
+    {
+      id: 'nano_3arg3asgtigae3xckabaaewkx3bzsh7nwz7jkmjos79ihyaxwphhm6qgjps4',
+      name: 'Nano Foundation #1',
+    },
+    {
+      id: 'nano_1stofnrxuz3cai7ze75o174bpm7scwj9jn3nxsn8ntzg784jf1gzn1jjdkou',
+      name: 'Nano Foundation #2',
+    },
+    {
+      id: 'nano_1q3hqecaw15cjt7thbtxu3pbzr1eihtzzpzxguoc37bj1wc5ffoh7w74gi6p',
+      name: 'Nano Foundation #3',
+    },
+    {
+      id: 'nano_3dmtrrws3pocycmbqwawk6xs7446qxa36fcncush4s1pejk16ksbmakis78m',
+      name: 'Nano Foundation #4',
+    },
+    {
+      id: 'nano_3hd4ezdgsp15iemx7h81in7xz5tpxi43b6b41zn3qmwiuypankocw3awes5k',
+      name: 'Nano Foundation #5',
+    },
+    {
+      id: 'nano_1awsn43we17c1oshdru4azeqjz9wii41dy8npubm4rg11so7dx3jtqgoeahy',
+      name: 'Nano Foundation #6',
+    },
+    {
+      id: 'nano_1anrzcuwe64rwxzcco8dkhpyxpi8kd7zsjc1oeimpc3ppca4mrjtwnqposrs',
+      name: 'Nano Foundation #7',
+    },
+    {
+      id: 'nano_1hza3f7wiiqa7ig3jczyxj5yo86yegcmqk3criaz838j91sxcckpfhbhhra1',
+      name: 'Nano Foundation #8',
+    },
+  ];"""
+nfRepsReplace = """  nfReps = [
+    {{
+      id: '{rep0}',
+      name: 'Nano Foundation #1',
+    }},
+    {{
+      id: '{rep1}',
+      name: 'Nano Foundation #2',
+    }},
+  ];""".format(rep0=rep0, rep1=rep1)
+lib.find_and_replace("%sNault/src/app/services/representative.service.ts" % lib.cwd(),
+                 str.encode(nfReps),
+                 str.encode(nfRepsReplace))
+
+defaultRepresentative = """    displayCurrency: 'USD',
+    defaultRepresentative: null,"""
+defaultRepresentativeReplace = """    displayCurrency: 'USD',
+    defaultRepresentative: '{rep0}',""".format(rep0=rep0)
+lib.find_and_replace("%sNault/src/app/services/app-settings.service.ts" % lib.cwd(),
+                 str.encode(defaultRepresentative),
+                 str.encode(defaultRepresentativeReplace))
+
+apiURL = "  apiUrl = `https://api.coingecko.com/api/v3/coins/nano?localization=false&tickers=false&market_data=true" \
+         "&community_data=false&developer_data=false&sparkline=false`;"
+apiURLReplace = "  apiUrl = `http://{abr}-wallet.{domainsvc}/dummy-price/dummy-price.json`".format(abr=abbreviation,
+                                                                                                   domainsvc=domainsvc)
+lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
+                 str.encode(apiURL),
+                 str.encode(apiURLReplace))
 
 # replace urls
 lib.replace_all(urls, ignore_list, "/Nault")
