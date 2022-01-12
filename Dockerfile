@@ -11,4 +11,7 @@ RUN chmod +x /usr/local/bin/rebrand-nault
 ADD rebrand_ninja.py /usr/local/bin/rebrand-ninja
 RUN chmod +x /usr/local/bin/rebrand-ninja
 
+ADD rebrand_boompow.py /usr/local/bin/rebrand_boompow
+RUN chmod +x /usr/local/bin/rebrand_boompow
+
 ADD asset/xno-symbol-blank.svg /opt/asset/xno-symbol-blank.svg
