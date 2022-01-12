@@ -6,6 +6,9 @@ import rebrand_lib as lib
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
 abbreviation = lib.get_env_variable('ABBREVIATION')
 
+# Default boompow payout address
+boompow_payout_address = lib.get_env_variable('BOOMPOW_PAYOUT_ADDRESS')
+
 # Fully qualified domain name
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
@@ -39,7 +42,7 @@ ignore_list = [
 ]
 
 bananoPublicAddress = "    p = re.compile('^(ban)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$')"
-bananoPublicAddressReplace = "    p = re.compile('^('+os.getenv(\"ABBREVIATION\", \"ban\")+')_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$')"
+bananoPublicAddressReplace = "    p = re.compile('^(%s)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$')" % abbreviation
 lib.find_and_replace("%sboompow/client/config_parse.py" % lib.cwd(),
                  str.encode(bananoPublicAddress),
                  str.encode(bananoPublicAddressReplace))

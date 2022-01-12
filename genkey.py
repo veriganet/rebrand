@@ -419,6 +419,8 @@ live_pre_conf_rep_7_public_key: {live_pre_conf_rep_7_public_key.upper()}
 live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
 
     abbreviation = args.abbreviation
+    boompow_version = 'v3.0.1'
+    boompow_payout_address = landing_account_id
     name = args.name
     faucet_public_key = faucet_public_key.upper()
     landing_public_key = landing_public_key.upper()
@@ -502,6 +504,8 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
 
     json_output = f'''{{
     "abbreviation": "{abbreviation}",
+    "boompow_version": "{boompow_version}",
+    "boompow_payout_address": "{boompow_payout_address}",
     "name": "{name}",
     "description": "{description}",
     "debug": "{debug}",
