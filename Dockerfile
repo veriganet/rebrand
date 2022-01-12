@@ -14,4 +14,7 @@ RUN chmod +x /usr/local/bin/rebrand-ninja
 ADD rebrand_boompow.py /usr/local/bin/rebrand-boompow
 RUN chmod +x /usr/local/bin/rebrand-boompow
 
+ADD rebrand_proxy.py /usr/local/bin/rebrand-proxy
+RUN chmod +x /usr/local/bin/rebrand-proxy
+
 ADD asset/xno-symbol-blank.svg /opt/asset/xno-symbol-blank.svg
