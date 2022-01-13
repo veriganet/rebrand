@@ -11,6 +11,9 @@ domainsvc = lib.get_env_variable('DOMAINSVC')
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
+work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
+
+
 ignore_list = [
     "build",
     "git",
@@ -363,6 +366,12 @@ apiURLReplace = "  apiUrl = `http://{abr}-wallet.{domainsvc}/dummy-price/dummy-p
 lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
                  str.encode(apiURL),
                  str.encode(apiURLReplace))
+
+baseThreshold = "fffffff800000000"
+baseThresholdReplace = "%s" % work_threshold_default
+lib.find_and_replace("%sNault/src/app/services/pow.service.ts" % lib.cwd(),
+                 str.encode(baseThreshold),
+                 str.encode(baseThresholdReplace))
 
 # replace urls
 lib.replace_all(urls, ignore_list, "/Nault")

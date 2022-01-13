@@ -12,6 +12,8 @@ boompow_payout_address = lib.get_env_variable('BOOMPOW_PAYOUT_ADDRESS')
 # Fully qualified domain name
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
+work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
+
 ignore_list = [
     "build",
     "git",
@@ -40,6 +42,17 @@ ignore_list = [
     "node_modules",
     "nanocurrency-js"
 ]
+
+words = [
+    [b"previous, difficulty='ffffffc000000000'", b"previous, difficulty='%s'" % str.encode(work_threshold_default)],
+    [b"previous, difficulty='fffffff800000000'", b"previous, difficulty='%s'" % str.encode(work_threshold_default)],
+    [b"base_difficulty='fffffe0000000000'", b"base_difficulty='%s'" % str.encode(work_threshold_default)],
+    [b"DEFAULT_WORK_DIFFICULTY = 'fffffe0000000000'", b"DEFAULT_WORK_DIFFICULTY = '%s'" % str.encode(work_threshold_default)],
+    [b'"difficulty": "fffffe0000000000"', b'"difficulty": "%s"' % str.encode(work_threshold_default)],
+    [b'default `fffffe0000000000`', b'default `%s`' % str.encode(work_threshold_default)],
+    [b'difficulty of `ffffffc000000000`', b'difficulty of `%s`' % str.encode(work_threshold_default)],
+]
+lib.replace_all(words, ignore_list, "/NanoRPCProxy")
 
 bananoPublicAddress = "    p = re.compile('^(ban)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$')"
 bananoPublicAddressReplace = "    p = re.compile('^(%s)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$')" % abbreviation

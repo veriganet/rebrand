@@ -10,7 +10,7 @@ abbreviation = lib.get_env_variable('ABBREVIATION')
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
 proxy_price_url = lib.get_env_variable('PROXY_PRICE_URL')
-proxy_work_threshold_default = lib.get_env_variable('PROXY_WORK_THRESHOLD_DEFAULT')
+proxy_work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
 
 ignore_list = [
     "build",

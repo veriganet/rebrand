@@ -78,6 +78,10 @@ test_rpc_port = lib.get_env_variable('TEST_RPC_PORT')
 # number of peers
 number_of_peers = lib.get_env_variable('NUMBER_OF_PEERS')
 
+# work threshold
+work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
+work_receive_threshold_default = lib.get_env_variable('WORK_RECEIVE_THRESHOLD_DEFAULT')
+
 accounts = [
     # nano/core_test/block.cpp .account_address
     [
@@ -531,3 +535,9 @@ lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(),
 lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(),
                      b'preconfigured_peers.push_back (default_live_peer_network);',
                      b"%s" % str.encode(preconfigured_peers.strip()))
+
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"0xfffffff800000000", b"0x%s" % str.encode(work_threshold_default))
+
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"0xfffffe0000000000", b"0x%s" % str.encode(work_receive_threshold_default))
