@@ -42,7 +42,7 @@ ignore_list = [
 ]
 
 price_url = "const price_url = 'https://api.coinpaprika.com/v1/tickers/nano-nano'"
-price_url_replace = "const price_url = '%s-wallet.%s/dummy-price/coinpaprika.json'" % (abbreviation, domainsvc)
+price_url_replace = "const price_url = '%s'" % proxy_price_url
 lib.find_and_replace("%sNanoRPCProxy/src/proxy.ts" % lib.cwd(),
                  str.encode(price_url),
                  str.encode(price_url_replace))

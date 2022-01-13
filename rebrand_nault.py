@@ -11,6 +11,7 @@ domainsvc = lib.get_env_variable('DOMAINSVC')
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
+nault_price_url = lib.get_env_variable('NAULT_PRICE_URL')
 work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
 
 
@@ -361,8 +362,7 @@ lib.find_and_replace("%sNault/src/app/services/app-settings.service.ts" % lib.cw
 
 apiURL = "  apiUrl = `https://api.coingecko.com/api/v3/coins/nano?localization=false&tickers=false&market_data=true" \
          "&community_data=false&developer_data=false&sparkline=false`;"
-apiURLReplace = "  apiUrl = `http://{abr}-wallet.{domainsvc}/dummy-price/dummy-price.json`".format(abr=abbreviation,
-                                                                                                   domainsvc=domainsvc)
+apiURLReplace = "  apiUrl = `%s`" % nault_price_url
 lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
                  str.encode(apiURL),
                  str.encode(apiURLReplace))
