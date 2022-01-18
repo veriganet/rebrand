@@ -64,3 +64,9 @@ bpow_url_replace = "const bpow_url: string = 'https://%s-bpow.%s/service/'" % (a
 lib.find_and_replace("%sNanoRPCProxy/src/proxy.ts" % lib.cwd(),
                  str.encode(bpow_url),
                  str.encode(bpow_url_replace))
+
+work_default_timeout = "const work_default_timeout: number = 10"
+work_default_timeout_replace = "const work_default_timeout: number = 20"
+lib.find_and_replace("%sNanoRPCProxy/src/proxy.ts" % lib.cwd(),
+                 str.encode(work_default_timeout),
+                 str.encode(work_default_timeout_replace))

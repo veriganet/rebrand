@@ -5,6 +5,8 @@ import rebrand_lib as lib
 # Three / four letter abbreviation of new block chain. Example: kor, nano, ban
 abbreviation = lib.get_env_variable('ABBREVIATION')
 
+domainsvc = lib.get_env_variable('DOMAINSVC')
+
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
@@ -115,10 +117,36 @@ viewRepresentativesReplace = '''  const nf_reps = [
 lib.find_and_replace("%s%s/views/statistics/representatives.ejs" % (lib.cwd(), subdir),
                  str.encode(viewRepresentatives), str.encode(viewRepresentativesReplace))
 
+cloudflare = '''    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ea11df0588ad483783aef1eccbb1cb9c"}'></script>
+    <!-- End Cloudflare Web Analytics -->'''
+cloudflareReplace = ''
+lib.find_and_replace("%s%s/partials/header.ejs" % (lib.cwd(), subdir),
+                 str.encode(cloudflare), str.encode(cloudflareReplace))
+
+googletagmanager = '''    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115902726-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-115902726-3');
+    </script>'''
+googletagmanagerReplace = ''
+lib.find_and_replace("%s%s/partials/header.ejs" % (lib.cwd(), subdir),
+                 str.encode(googletagmanager), str.encode(googletagmanagerReplace))
+
+representativeFooter = '<p class="truncate">Representative: <a href="https://mynano.ninja/account/my-nano-ninja">nano_1ninja7rh37ehfp9utkor5ixmxyg8kme8fnzc4zty145ibch8kf5jwpnzr3r</a></p>'
+representativeFooterReplace = ''
+lib.find_and_replace("%s%s/partials/footer.ejs" % (lib.cwd(), subdir),
+                 str.encode(representativeFooter), str.encode(representativeFooterReplace))
 
 words = [
     [b"nano_", b"%s_" % str.encode(abbreviation)],
     [b"|nano", b"|%s" % str.encode(abbreviation)],
+    [b"https://mynano.ninja/api/", b"https://%s-ninja.%s/api/" % (str.encode(abbreviation), str.encode(domainsvc))],
+    [b"Nano cryptocurrency!", b"%s cryptocurrency!" % str.encode(abbreviation.upper())],
 ]
 lib.replace_all(words, ignore_list, subdir)
 

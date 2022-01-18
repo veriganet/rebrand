@@ -70,9 +70,9 @@ def key_create(a):
 
 
 def is_ignored(f, w_list):
-    if args.debug:
-        print("f: %s" % f)
-        print("Ignored words: %s" % w_list)
+    #if args.debug:
+    #    print("f: %s" % f)
+    #    print("Ignored words: %s" % w_list)
 
     if w_list is not None:
         if re.compile('|'.join(w_list)).search(f):
