@@ -382,8 +382,8 @@ lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
 
 getPrice = "    if (!currency) return; // No currency defined, do not refetch"
 getPriceReplace = """    if (!this.apiUrl) return; // No API URL defined, do not fetch
-    if (!this.storeKey) return; // No Store Key not defined, do not fetch
-    if (!currency) return; // No currency defined, do not refetch"""
+    if (!this.storeKey) return this.price.lastPrice = 0; // No Store Key not defined, do not fetch
+    if (!currency) return this.price.lastPrice = 0; // No currency defined, do not refetch"""
 lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
                  str.encode(getPrice),
                  str.encode(getPriceReplace))
