@@ -10,6 +10,9 @@ domainsvc = lib.get_env_variable('DOMAINSVC')
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
+# supply_multiplier
+supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
+
 subdir = "/MyNanoNinja"
 
 ignore_list = [
@@ -147,6 +150,7 @@ words = [
     [b"|nano", b"|%s" % str.encode(abbreviation)],
     [b"https://mynano.ninja/api/", b"https://%s-ninja.%s/api/" % (str.encode(abbreviation), str.encode(domainsvc))],
     [b"Nano cryptocurrency!", b"%s cryptocurrency!" % str.encode(abbreviation.upper())],
+    [b"1000000000000000000000000000000", b"%s" % str.encode(supply_multiplier)],
 ]
 lib.replace_all(words, ignore_list, subdir)
 

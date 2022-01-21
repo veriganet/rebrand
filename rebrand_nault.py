@@ -11,6 +11,9 @@ domainsvc = lib.get_env_variable('DOMAINSVC')
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
 
+# supply_multiplier
+supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
+
 nault_store_key = lib.get_env_variable('NAULT_STORE_KEY')
 nault_price_url = lib.get_env_variable('NAULT_PRICE_URL')
 work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
@@ -393,6 +396,42 @@ baseThresholdReplace = "%s" % work_threshold_default
 lib.find_and_replace("%sNault/src/app/services/pow.service.ts" % lib.cwd(),
                  str.encode(baseThreshold),
                  str.encode(baseThresholdReplace))
+
+
+gxrb_ratio = supply_multiplier + "000"
+print(len(gxrb_ratio))
+mxrb_ratio = supply_multiplier
+print(len(mxrb_ratio))
+kxrb_ratio = supply_multiplier[:-3]
+print(len(kxrb_ratio))
+xrb_ratio = supply_multiplier[:-6]
+print(len(xrb_ratio))
+
+rai_pipes = """  mrai = 1000000000000000000000000000000;
+  krai = 1000000000000000000000000000;
+  rai  = 1000000000000000000000000;"""
+rai_pipes_replace = """  mrai = {mxrb_ratio};
+  krai = {kxrb_ratio};
+  rai  = {xrb_ratio};""".\
+    format(mxrb_ratio=mxrb_ratio,
+           kxrb_ratio=kxrb_ratio,
+           xrb_ratio=xrb_ratio)
+lib.find_and_replace("%sNault/src/app/pipes/rai.pipe.ts" % lib.cwd(),
+                 str.encode(rai_pipes),
+                 str.encode(rai_pipes_replace))
+
+util_service = """const mnano = 1000000000000000000000000000000;
+const knano = 1000000000000000000000000000;
+const nano  = 1000000000000000000000000;"""
+util_service_replace = """const mnano = {mxrb_ratio};
+const knano = {kxrb_ratio};
+const nano  = {xrb_ratio};""".\
+    format(mxrb_ratio=mxrb_ratio,
+           kxrb_ratio=kxrb_ratio,
+           xrb_ratio=xrb_ratio)
+lib.find_and_replace("%sNault/src/app/services/util.service.ts" % lib.cwd(),
+                 str.encode(util_service),
+                 str.encode(util_service_replace))
 
 # replace urls
 lib.replace_all(urls, ignore_list, "/Nault")

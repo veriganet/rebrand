@@ -78,7 +78,11 @@ test_rpc_port = lib.get_env_variable('TEST_RPC_PORT')
 # number of peers
 number_of_peers = lib.get_env_variable('NUMBER_OF_PEERS')
 
+# supply_multiplier
+supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
+
 # work threshold
+work_threshold = lib.get_env_variable('WORK_THRESHOLD')
 work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
 work_receive_threshold_default = lib.get_env_variable('WORK_RECEIVE_THRESHOLD_DEFAULT')
 
@@ -541,3 +545,33 @@ lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
 
 lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
                      b"0xfffffe0000000000", b"0x%s" % str.encode(work_receive_threshold_default))
+
+gxrb_ratio = supply_multiplier + "000"
+print(len(gxrb_ratio))
+mxrb_ratio = supply_multiplier
+print(len(mxrb_ratio))
+kxrb_ratio = supply_multiplier[:-3]
+print(len(kxrb_ratio))
+xrb_ratio = supply_multiplier[:-6]
+print(len(xrb_ratio))
+
+nanoUnit128 = """nano::uint128_t const Gxrb_ratio = nano::uint128_t ("1000000000000000000000000000000000"); // 10^33
+nano::uint128_t const Mxrb_ratio = nano::uint128_t ("1000000000000000000000000000000"); // 10^30
+nano::uint128_t const kxrb_ratio = nano::uint128_t ("1000000000000000000000000000"); // 10^27
+nano::uint128_t const xrb_ratio = nano::uint128_t ("1000000000000000000000000"); // 10^24"""
+
+nanoUnit128Replace = """nano::uint128_t const Gxrb_ratio = nano::uint128_t ("{gxrb_ratio}"); // 10^{gxrb_ratio_len}
+nano::uint128_t const Mxrb_ratio = nano::uint128_t ("{mxrb_ratio}"); // 10^{mxrb_ratio_len}
+nano::uint128_t const kxrb_ratio = nano::uint128_t ("{kxrb_ratio}"); // 10^{kxrb_ratio_len}
+nano::uint128_t const xrb_ratio = nano::uint128_t ("{xrb_ratio}"); // 10^{xrb_ratio_len}""".\
+    format(gxrb_ratio=gxrb_ratio,
+           gxrb_ratio_len=len(gxrb_ratio)-1,
+           mxrb_ratio=mxrb_ratio,
+           mxrb_ratio_len=len(mxrb_ratio)-1,
+           kxrb_ratio=kxrb_ratio,
+           kxrb_ratio_len=len(kxrb_ratio)-1,
+           xrb_ratio=xrb_ratio,
+           xrb_ratio_len=len(xrb_ratio)-1)
+
+lib.find_and_replace("%snano-node/nano/lib/numbers.hpp" % lib.cwd(),
+                     str.encode(nanoUnit128), str.encode(nanoUnit128Replace))
