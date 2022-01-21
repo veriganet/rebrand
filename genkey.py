@@ -448,8 +448,8 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     beta_pre_conf_rep_account_1 = beta_pre_conf_rep_account_1
     beta_pre_conf_rep_public_key_0 = beta_pre_conf_rep_0_public_key
     beta_pre_conf_rep_public_key_1 = beta_pre_conf_rep_1_public_key
-    beta_pre_conf_rep_private_key_0 = None
-    beta_pre_conf_rep_private_key_1 = None
+    beta_pre_conf_rep_private_key_0 = 'None'
+    beta_pre_conf_rep_private_key_1 = 'None'
     live_pre_conf_rep_account_0 = live_pre_conf_rep_account_0
     live_pre_conf_rep_account_1 = live_pre_conf_rep_account_1
     live_pre_conf_rep_account_2 = live_pre_conf_rep_account_2
@@ -473,14 +473,14 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     debug = 'DEBUG'
     enable_custom_domain = "false"
     custom_domain = None
-    live_pre_conf_rep_private_key_0 = None
-    live_pre_conf_rep_private_key_1 = None
-    live_pre_conf_rep_private_key_2 = None
-    live_pre_conf_rep_private_key_3 = None
-    live_pre_conf_rep_private_key_4 = None
-    live_pre_conf_rep_private_key_5 = None
-    live_pre_conf_rep_private_key_6 = None
-    live_pre_conf_rep_private_key_7 = None
+    live_pre_conf_rep_private_key_0 = 'None'
+    live_pre_conf_rep_private_key_1 = 'None'
+    live_pre_conf_rep_private_key_2 = 'None'
+    live_pre_conf_rep_private_key_3 = 'None'
+    live_pre_conf_rep_private_key_4 = 'None'
+    live_pre_conf_rep_private_key_5 = 'None'
+    live_pre_conf_rep_private_key_6 = 'None'
+    live_pre_conf_rep_private_key_7 = 'None'
     nano_network = 'live'
     beta_node_peering_port = '54000'
     test_node_peering_port = '44000'
@@ -489,6 +489,8 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     test_rpc_port = '45000'
     logging = 'DEBUG'
     nault_version = 'v1.18.0'
+    nault_price_url = 'None'
+    nault_store_key = "None"
     ninja_version = '663a5b24e2a8e1d423fc3311a6945cc0d234953e'
     node_version = 'V22.1'
     binary_public = 'false'
@@ -498,6 +500,22 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     organization = None
     owner = None
     deleted = 'false'
+
+    proxy_price_url = 'None'
+    proxy_version = 'v1.4.4'
+
+    # MILLION = '1000000000000000000000000000000'
+    # BILLION = '100000000000000000000000000000'
+    # TEN_BILLION = '10000000000000000000000000000'
+    # HUNDRED_BILLION = '1000000000000000000000000000'
+    supply_multiplier = '100000000000000000000000000000'
+
+    # BANANO = 'fffffe0000000000,fffffff000000000,0000000000000000'
+    # NANO = 'ffffffc000000000,fffffff800000000,fffffe0000000000'
+    work_threshold = "ffffffc000000000,fffffff800000000,fffffe0000000000"
+
+    work_threshold_default = "fffffff800000000"
+    work_receive_threshold_default = "fffffe0000000000"
     created_at = None
     updated_at = None
     deleted_by = None
@@ -512,34 +530,34 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     "domain_svc": "{domain_svc}",
     "enable_custom_domain": "{enable_custom_domain}",
     "custom_domain": "{custom_domain}",
-    "faucet_public_key": "{faucet_public_key}",
-    "landing_public_key": "{landing_public_key}",
-    "canary_beta_public_key": "{canary_beta_public_key}",
-    "canary_live_public_key": "{canary_live_public_key}",
-    "canary_test_public_key": "{canary_test_public_key}",
-    "genesis_beta_public_key": "{genesis_beta_public_key}",
+    "faucet_public_key": "{faucet_public_key.upper()}",
+    "landing_public_key": "{landing_public_key.upper()}",
+    "canary_beta_public_key": "{canary_beta_public_key.upper()}",
+    "canary_live_public_key": "{canary_live_public_key.upper()}",
+    "canary_test_public_key": "{canary_test_public_key.upper()}",
+    "genesis_beta_public_key": "{genesis_beta_public_key.upper()}",
     "genesis_beta_account": "{genesis_beta_account}",
     "genesis_beta_work": "{genesis_beta_work}",
     "genesis_beta_signature": "{genesis_beta_signature}",
-    "genesis_dev_public_key": "{genesis_dev_public_key}",
-    "genesis_dev_private_key": "{genesis_dev_private_key}",
+    "genesis_dev_public_key": "{genesis_dev_public_key.upper()}",
+    "genesis_dev_private_key": "{genesis_dev_private_key.upper()}",
     "genesis_dev_account": "{genesis_dev_account}",
     "genesis_dev_work": "{genesis_dev_work}",
-    "genesis_dev_signature": "{genesis_dev_signature}",
-    "genesis_live_public_key": "{genesis_live_public_key}",
+    "genesis_dev_signature": "{genesis_dev_signature.upper()}",
+    "genesis_live_public_key": "{genesis_live_public_key.upper()}",
     "genesis_live_account": "{genesis_live_account}",
     "genesis_live_work": "{genesis_live_work}",
-    "genesis_live_signature": "{genesis_live_signature}",
-    "genesis_test_public_key": "{genesis_test_public_key}",
+    "genesis_live_signature": "{genesis_live_signature.upper()}",
+    "genesis_test_public_key": "{genesis_test_public_key.upper()}",
     "genesis_test_account": "{genesis_test_account}",
     "genesis_test_work": "{genesis_test_work}",
-    "genesis_test_signature": "{genesis_test_signature}",
+    "genesis_test_signature": "{genesis_test_signature.upper()}",
     "beta_pre_conf_rep_account_0": "{beta_pre_conf_rep_account_0}",
     "beta_pre_conf_rep_account_1": "{beta_pre_conf_rep_account_1}",
-    "beta_pre_conf_rep_public_key_0": "{beta_pre_conf_rep_public_key_0}",
-    "beta_pre_conf_rep_public_key_1": "{beta_pre_conf_rep_public_key_1}",
-    "beta_pre_conf_rep_private_key_0": "{beta_pre_conf_rep_private_key_0}",
-    "beta_pre_conf_rep_private_key_1": "{beta_pre_conf_rep_private_key_1}",
+    "beta_pre_conf_rep_public_key_0": "{beta_pre_conf_rep_public_key_0.upper()}",
+    "beta_pre_conf_rep_public_key_1": "{beta_pre_conf_rep_public_key_1.upper()}",
+    "beta_pre_conf_rep_private_key_0": "{beta_pre_conf_rep_private_key_0.upper()}",
+    "beta_pre_conf_rep_private_key_1": "{beta_pre_conf_rep_private_key_1.upper()}",
     "live_pre_conf_rep_account_0": "{live_pre_conf_rep_account_0}",
     "live_pre_conf_rep_account_1": "{live_pre_conf_rep_account_1}",
     "live_pre_conf_rep_account_2": "{live_pre_conf_rep_account_2}",
@@ -548,22 +566,22 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     "live_pre_conf_rep_account_5": "{live_pre_conf_rep_account_5}",
     "live_pre_conf_rep_account_6": "{live_pre_conf_rep_account_6}",
     "live_pre_conf_rep_account_7": "{live_pre_conf_rep_account_7}",
-    "live_pre_conf_rep_public_key_0": "{live_pre_conf_rep_public_key_0}",
-    "live_pre_conf_rep_public_key_1": "{live_pre_conf_rep_public_key_1}",
-    "live_pre_conf_rep_public_key_2": "{live_pre_conf_rep_public_key_2}",
-    "live_pre_conf_rep_public_key_3": "{live_pre_conf_rep_public_key_3}",
-    "live_pre_conf_rep_public_key_4": "{live_pre_conf_rep_public_key_4}",
-    "live_pre_conf_rep_public_key_5": "{live_pre_conf_rep_public_key_5}",
-    "live_pre_conf_rep_public_key_6": "{live_pre_conf_rep_public_key_6}",
-    "live_pre_conf_rep_public_key_7": "{live_pre_conf_rep_public_key_7}",
-    "live_pre_conf_rep_private_key_0": "{live_pre_conf_rep_private_key_0}",
-    "live_pre_conf_rep_private_key_1": "{live_pre_conf_rep_private_key_1}",
-    "live_pre_conf_rep_private_key_2": "{live_pre_conf_rep_private_key_2}",
-    "live_pre_conf_rep_private_key_3": "{live_pre_conf_rep_private_key_3}",
-    "live_pre_conf_rep_private_key_4": "{live_pre_conf_rep_private_key_4}",
-    "live_pre_conf_rep_private_key_5": "{live_pre_conf_rep_private_key_5}",
-    "live_pre_conf_rep_private_key_6": "{live_pre_conf_rep_private_key_6}",
-    "live_pre_conf_rep_private_key_7": "{live_pre_conf_rep_private_key_7}",
+    "live_pre_conf_rep_public_key_0": "{live_pre_conf_rep_public_key_0.upper()}",
+    "live_pre_conf_rep_public_key_1": "{live_pre_conf_rep_public_key_1.upper()}",
+    "live_pre_conf_rep_public_key_2": "{live_pre_conf_rep_public_key_2.upper()}",
+    "live_pre_conf_rep_public_key_3": "{live_pre_conf_rep_public_key_3.upper()}",
+    "live_pre_conf_rep_public_key_4": "{live_pre_conf_rep_public_key_4.upper()}",
+    "live_pre_conf_rep_public_key_5": "{live_pre_conf_rep_public_key_5.upper()}",
+    "live_pre_conf_rep_public_key_6": "{live_pre_conf_rep_public_key_6.upper()}",
+    "live_pre_conf_rep_public_key_7": "{live_pre_conf_rep_public_key_7.upper()}",
+    "live_pre_conf_rep_private_key_0": "{live_pre_conf_rep_private_key_0.upper()}",
+    "live_pre_conf_rep_private_key_1": "{live_pre_conf_rep_private_key_1.upper()}",
+    "live_pre_conf_rep_private_key_2": "{live_pre_conf_rep_private_key_2.upper()}",
+    "live_pre_conf_rep_private_key_3": "{live_pre_conf_rep_private_key_3.upper()}",
+    "live_pre_conf_rep_private_key_4": "{live_pre_conf_rep_private_key_4.upper()}",
+    "live_pre_conf_rep_private_key_5": "{live_pre_conf_rep_private_key_5.upper()}",
+    "live_pre_conf_rep_private_key_6": "{live_pre_conf_rep_private_key_6.upper()}",
+    "live_pre_conf_rep_private_key_7": "{live_pre_conf_rep_private_key_7.upper()}",
     "nano_network": "{nano_network}",
     "live_node_peering_port": "{live_node_peering_port}",
     "beta_node_peering_port": "{beta_node_peering_port}",
@@ -578,6 +596,14 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     "binary_public": "{binary_public}",
     "s3_bucket_name": "veriga-{abbreviation}",
     "number_of_peers": "{number_of_peers}",
+    "proxy_price_url": "{proxy_price_url}",
+    "proxy_version": "{proxy_version}",
+    "nault_price_url": "{nault_price_url}",
+    "nault_store_key": "{nault_store_key}",
+    "supply_multiplier": "{supply_multiplier}",
+    "work_threshold": "{work_threshold}",
+    "work_threshold_default": "{work_threshold_default}",
+    "work_receive_threshold_default": "{work_receive_threshold_default}",
     "status": {status},
     "created_by": "{created_by}",
     "organization": "{organization}",
