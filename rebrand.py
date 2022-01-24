@@ -575,3 +575,15 @@ nano::uint128_t const xrb_ratio = nano::uint128_t ("{xrb_ratio}"); // 10^{xrb_ra
 
 lib.find_and_replace("%snano-node/nano/lib/numbers.hpp" % lib.cwd(),
                      str.encode(nanoUnit128), str.encode(nanoUnit128Replace))
+
+
+supply_multiplier_diff = len('1000000000000000000000000000000') - len(supply_multiplier)
+online_weight_minimum_ratio = str(60000)[:-supply_multiplier_diff]
+online_weight_minimum = "nano::amount online_weight_minimum{ 60000 * nano::Gxrb_ratio };"
+online_weight_minimum_replace = "nano::amount online_weight_minimum{ %s * nano::Gxrb_ratio };" % \
+                                online_weight_minimum_ratio
+lib.find_and_replace("%snano-node/nano/node/nodeconfig.hpp" % lib.cwd(),
+                     str.encode(online_weight_minimum), str.encode(online_weight_minimum_replace))
+
+
+

@@ -138,3 +138,5 @@ Nault
 MyNanoNinja
 boompow
 NanoRPCProxy
+.env_bootstrap
+tst0_node

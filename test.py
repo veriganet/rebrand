@@ -1,32 +1,29 @@
-from nanolib import generate_seed, generate_account_id, generate_account_key_pair, \
-    get_account_id, AccountIDPrefix, Block
+#!/usr/bin/env python3
 
-# create key pair and account
-#seed = generate_seed()
-seed = "e1552b5c4ca6328df504b6eb84901de4dad6213f1090dcfaae0c819da8af08f0"
-key_pair = generate_account_key_pair(seed, 0)
-account = get_account_id(public_key=key_pair.public, prefix=AccountIDPrefix.NANO.value)
-account_replace = account.replace('nano_', 'kor_')
+import os
+import logging
+import subprocess
 
-# create open block
-work = "348a772019c867a9"
-signature = ""
 
-print("Seed: %s" % seed)
-print("Private: %s" % key_pair.private)
-print("Public: %s" % key_pair.public)
-print("Account: %s" % account_replace)
+def cwd():
+    directory = os.getcwd()
+    logging.debug(directory)
+    return directory
 
-# create open block
-block = Block(
-    block_type="open",
-    source=key_pair.public,
-    representative=account,
-    account=account,
-    difficulty="fffffe0000000000"
-)
-block.solve_work()
-block.sign(key_pair.private)
 
-print(block.json())
+def wallet_id_list():
+    lines = []
+    proc = subprocess.Popen(['./%s_node' % "tst0", '--wallet_list'], stdout=subprocess.PIPE)
+    while True:
+        line = proc.stdout.readline().decode()
+        if not line:
+            break
+        if "Wallet ID" in line:
+            lines.append(str(line.rstrip()).replace('Wallet ID: ', ''))
 
+    return lines
+
+
+wallet_id_list = wallet_id_list()
+
+print(wallet_id_list)
