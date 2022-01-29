@@ -46,9 +46,13 @@ def get_env_variable(env, default):
         return os.environ.get(env, default)
 
 
+abbreviation = get_env_variable('ABBREVIATION', "")
+max_supply = 340282366920938463463374607431768211455
+
+
 def wallet_list():
     lines = []
-    proc = subprocess.Popen(['%s/%s_node' % (cwd(), "tst0"), '--wallet_list'], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['%s/%s_node' % (cwd(), abbreviation), '--wallet_list'], stdout=subprocess.PIPE)
     while True:
         line = proc.stdout.readline().decode().replace('Wallet ID: ', '')
         if not line:
@@ -60,7 +64,7 @@ def wallet_list():
 
 def wallet_id_list():
     lines = []
-    proc = subprocess.Popen(['./%s_node' % "tst0", '--wallet_list'], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['./%s_node' % abbreviation, '--wallet_list'], stdout=subprocess.PIPE)
     while True:
         line = proc.stdout.readline().decode()
         if not line:
@@ -82,15 +86,19 @@ headers = get_env_variable('BOOTSTRAP_HEADERS', [])
 banano = get_env_variable('BOOTSTRAP_BANANO', 'False')
 
 # keys
-genesis_live_key_seed = get_env_variable('GENESIS_LIVE_KEY_SEED', "")
-landing_key_seed = get_env_variable('LANDING_KEY_SEED', "")
-live_pre_conf_rep_0_key_seed = get_env_variable('LIVE_PRE_CONF_REP_0_KEY_SEED', "")
-live_pre_conf_rep_1_key_seed = get_env_variable('LIVE_PRE_CONF_REP_1_KEY_SEED', "")
-live_pre_conf_rep_2_key_seed = get_env_variable('LIVE_PRE_CONF_REP_2_KEY_SEED', "")
-live_pre_conf_rep_3_key_seed = get_env_variable('LIVE_PRE_CONF_REP_3_KEY_SEED', "")
-live_pre_conf_rep_4_key_seed = get_env_variable('LIVE_PRE_CONF_REP_4_KEY_SEED', "")
-live_pre_conf_rep_5_key_seed = get_env_variable('LIVE_PRE_CONF_REP_5_KEY_SEED', "")
-live_pre_conf_rep_6_key_seed = get_env_variable('LIVE_PRE_CONF_REP_6_KEY_SEED', "")
+live_genesis_key_seed = get_env_variable('GENESIS_LIVE_KEY_SEED', "")
+
+live_pre_conf_reps_seeds = [
+    get_env_variable('LIVE_PRE_CONF_REP_0_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_1_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_2_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_3_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_4_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_5_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_6_KEY_SEED', "")
+]
+
+live_pre_conf_reps_accounts = []
 
 # Check for --version or -V
 if args.version:
@@ -111,27 +119,34 @@ try:
 except pnrw.exceptions as node:
     logging.error(node)
 
-if args.boot:
-    # check if any wallets exist
-    wallet_list = wallet_list()
-    logging.debug(f"Wallet List: {wallet_list}")
+# check if any wallets exist
+wallet_list = wallet_list()
+logging.debug(f"Wallet List: {wallet_list}")
 
-    genesis_key = node.deterministic_key(genesis_live_key_seed, 0)
-    landing_key = node.deterministic_key(landing_key_seed, 0)
-    rep0_key = node.deterministic_key(live_pre_conf_rep_0_key_seed, 0)
-    rep1_key = node.deterministic_key(live_pre_conf_rep_1_key_seed, 0)
-    logging.debug(f"Genesis Account ID: {genesis_key['account']}")
-    logging.debug(f"Landing Account ID: {landing_key['account']}")
-    logging.debug(f"Representative 0 Account ID: {rep0_key['account']}")
-    logging.debug(f"Representative 1 Account ID: {rep1_key['account']}")
+wallet_id_list = wallet_id_list()
+logging.debug(f"wallet_id_list: {wallet_id_list}")
+
+if args.boot:
+    for wallet in wallet_id_list:
+        account_list = node.account_list(wallet)
+        logging.debug(f"account_list: {account_list}")
+
+    live_genesis_key = node.deterministic_key(live_genesis_key_seed, 0)
+    logging.debug(f"Genesis Account ID: {live_genesis_key['account']}")
+
+    for i, seed in enumerate(live_pre_conf_reps_seeds):
+        if seed:
+            account = node.deterministic_key(seed, 0)
+            live_pre_conf_reps_accounts.append(account['account'])
+            logging.debug(f"Representative {i} Account ID: {account['account']}")
 
     create_genesis_wallet = False
-    create_landing_wallet = False
-    create_rep0_wallet = False
-    create_rep1_wallet = False
+    create_genesis_account = False
+
+    fund_representatives = False
 
     # define create_[]_wallet variables
-    if genesis_key['account'] not in wallet_list:
+    if live_genesis_key['account'] not in wallet_list:
         logging.info("Genesis key DO NOT exist in wallet")
         create_genesis_wallet = True
         logging.debug(f"create_genesis_wallet: {create_genesis_wallet}")
@@ -139,178 +154,135 @@ if args.boot:
         logging.info("Genesis key exist in wallet. Skipping...")
         logging.debug(f"create_genesis_wallet: {create_genesis_wallet}")
 
-    if landing_key['account'] not in wallet_list:
-        logging.info("Landing key DO NOT exist in wallet")
-        create_landing_wallet = True
-        logging.debug(f"create_landing_wallet: {create_landing_wallet}")
-    else:
-        logging.info("Landing key exist in wallet. Skipping...")
-        logging.debug(f"create_landing_wallet: {create_landing_wallet}")
-
-    if rep0_key['account'] not in wallet_list:
-        logging.info("Representative 0 key DO NOT exist in wallet")
-        create_rep0_wallet = True
-        logging.debug(f"create_rep0_wallet: {create_rep0_wallet}")
-    else:
-        logging.info("Representative 0 key exist in wallet. Skipping...")
-        logging.debug(f"create_rep0_wallet: {create_rep0_wallet}")
-
-    if rep1_key['account'] not in wallet_list:
-        logging.info("Representative 0 key DO NOT exist in wallet")
-        create_rep1_wallet = True
-        logging.debug(f"create_rep0_wallet: {create_rep1_wallet}")
-    else:
-        logging.info("Representative 1 key exist in wallet. Skipping...")
-        logging.debug(f"create_rep1_wallet: {create_rep1_wallet}")
-
     # create genesis wallet
-    genesis_wallet = None
+    live_genesis_wallet = None
     if create_genesis_wallet:
         try:
-            genesis_wallet = node.wallet_create()
+            live_genesis_wallet = node.wallet_create()
             logging.info('Creating genesis wallet')
-            logging.debug(f"Wallet ID {genesis_wallet}")
+            logging.debug(f"Wallet ID {live_genesis_wallet}")
 
             # add genesis seed to the wallet
-            genesis_wallet_details = node.wallet_change_seed(genesis_wallet, genesis_live_key_seed)
+            genesis_wallet_details = node.wallet_change_seed(live_genesis_wallet, live_genesis_key_seed)
             logging.info('Adding genesis seed to wallet')
-            logging.debug(f"Genesis Wallet ID: {genesis_wallet}")
-            logging.debug(f"Genesis Seed: {genesis_live_key_seed}")
+            logging.debug(f"Genesis Wallet ID: {live_genesis_wallet}")
+            logging.debug(f"Genesis Seed: {live_genesis_key_seed}")
             logging.debug(f"Genesis Wallet Details: {genesis_wallet_details}")
         except pnrw.exceptions as error:
             logging.error(error)
     else:
         logging.info("Skipping creating genesis wallet...")
         logging.info("Getting genesis wallet id...")
-        for wallet in wallet_id_list():
+        for wallet in wallet_id_list:
             account_list = node.account_list(wallet)
             logging.debug(f"Wallet ID: {wallet}")
             logging.debug(f"Accounts in this wallet: {account_list}")
-            if genesis_key['account'] in account_list:
+            if live_genesis_key['account'] in account_list:
                 logging.info('Genesis wallet id found.')
-                genesis_wallet = wallet
-                logging.debug(f"Genesis Wallet ID: {genesis_wallet}")
+                live_genesis_wallet = wallet
+                logging.debug(f"Genesis Wallet ID: {live_genesis_wallet}")
 
-    # fund representative 0
-    rep0_account_balance = node.account_balance(rep0_key['account'])
-    logging.debug(f"rep0_account_balance: {rep0_account_balance}")
-    if rep0_account_balance['balance'] <= 0 or rep0_account_balance['pending'] <= 0:
-        logging.info("Sending funds to representative 0 ...")
-        node.send(genesis_wallet, genesis_key['account'],
-                  rep0_key['account'],
-                  amount=10000000000000000000000000000000)
-        logging.debug(f"Representative 0 balance: {rep0_account_balance}")
-    else:
-        logging.info("Representative 0 funded! Skipping...")
-        logging.debug(f"Representative 0 balance: {rep0_account_balance}")
+    # get number of deterministic_key equal to number of representatives
+    #live_genesis_accounts = node.account_list(live_genesis_wallet)
+    live_genesis_accounts = []
+    logging.info(f"Getting {len(live_pre_conf_reps_accounts)} deterministic accounts for genesis account")
+    for i in range(len(live_pre_conf_reps_accounts)):
+        live_genesis_account = node.deterministic_key(live_genesis_key_seed, i)["account"]
+        logging.debug(f"live_genesis_account {i}: {live_genesis_account}")
+        live_genesis_accounts.append(live_genesis_account)
 
-    # fund representative 1
-    rep1_account_balance = node.account_balance(rep1_key['account'])
-    if rep1_account_balance['balance'] <= 0 or rep1_account_balance['pending'] <= 0:
-        logging.info("Sending funds to representative 1 ...")
-        node.send(genesis_wallet, genesis_key['account'],
-                  rep1_key['account'],
-                  amount=10000000000000000000000000000000)
-        logging.debug(f"Representative 1 balance: {rep1_account_balance}")
-    else:
-        logging.info("Representative 1 funded! Skipping...")
-        logging.debug(f"Representative 1 balance: {rep1_account_balance}")
-
-    # fund landing account
-    landing_account_balance = node.account_balance(landing_key['account'])
-    if landing_account_balance['balance'] <= 0 or landing_account_balance['pending'] <= 0:
-        logging.info("Sending funds to landing account ...")
-        node.send(genesis_wallet, genesis_key['account'],
-                  landing_key['account'],
-                  amount=1000000000000000000000000000000000000)
-        logging.debug(f"Representative 1 balance: {rep1_account_balance}")
-    else:
-        logging.info("Landing account funded! Skipping...")
-        logging.debug(f"Landing account balance: {landing_account_balance}")
-
-    # create representative 0 wallet
-    rep0_wallet = None
-    if create_rep0_wallet:
+    # create genesis accounts for number of representatives
+    if len(live_genesis_accounts) < len(live_pre_conf_reps_accounts):
+        logging.info("Adding more accounts to genesis wallet.")
+        logging.debug("This means there are less accounts in genesis wallet then active representatives.")
         try:
-            rep0_wallet = node.wallet_create()
-            logging.info('Creating representative 0 wallet')
-            logging.debug(f"Wallet ID {rep0_wallet}")
-
-            # add representative 0 seed to the wallet
-            rep0_wallet_details = node.wallet_change_seed(rep0_wallet, live_pre_conf_rep_0_key_seed)
-            logging.info('Adding representative 0 seed to wallet')
-            logging.debug(f"Genesis Wallet ID: {rep0_wallet}")
-            logging.debug(f"Genesis Seed: {live_pre_conf_rep_0_key_seed}")
-            logging.debug(f"Genesis Wallet Details: {rep0_wallet_details}")
+            number_of_accounts = len(live_pre_conf_reps_accounts)
+            genesis_account = node.accounts_create(live_genesis_wallet, number_of_accounts)
+            logging.info(f"Creating {number_of_accounts} in genesis wallet.")
         except pnrw.exceptions as error:
             logging.error(error)
     else:
-        logging.info("Skipping creating representative 0 wallet...")
-        logging.info("Getting representative 0 wallet id...")
-        for wallet in wallet_id_list():
-            account_list = node.account_list(wallet)
-            logging.debug(f"Wallet ID: {wallet}")
-            logging.debug(f"Accounts in this wallet: {account_list}")
-            if rep0_key['account'] in account_list:
-                logging.info('Representative 0 wallet id found.')
-                genesis_wallet = wallet
-                logging.debug(f"Representative 0 Wallet ID: {rep0_wallet}")
+        logging.info("Skipping to add accounts to genesis wallet.")
+        logging.debug("This means there are enough accounts in genesis wallet.")
 
-    # create representative 0 wallet
-    rep1_wallet = None
-    if create_rep1_wallet:
-        try:
-            rep1_wallet = node.wallet_create()
-            logging.info('Creating representative 1 wallet')
-            logging.debug(f"Wallet ID {rep1_wallet}")
+    # fund representative accounts
+    for i, account in enumerate(live_pre_conf_reps_accounts):
+        logging.debug(f"account: {account}")
+        account_balance = node.account_balance(account)
+        logging.debug(f"Representative {i} account balance: {account_balance}")
 
-            # add representative 0 seed to the wallet
-            rep1_wallet_details = node.wallet_change_seed(rep1_wallet, live_pre_conf_rep_1_key_seed)
-            logging.info('Adding representative 0 seed to wallet')
-            logging.debug(f"Genesis Wallet ID: {rep1_wallet}")
-            logging.debug(f"Genesis Seed: {live_pre_conf_rep_1_key_seed}")
-            logging.debug(f"Genesis Wallet Details: {rep1_wallet_details}")
-        except pnrw.exceptions as error:
-            logging.error(error)
-    else:
-        logging.info("Skipping creating representative 1 wallet...")
-        logging.info("Getting representative 1 wallet id...")
-        for wallet in wallet_id_list():
-            account_list = node.account_list(wallet)
-            logging.debug(f"Wallet ID: {wallet}")
-            logging.debug(f"Accounts in this wallet: {account_list}")
-            if rep1_key['account'] in account_list:
-                logging.info('Representative 1 wallet id found.')
-                genesis_wallet = wallet
-                logging.debug(f"Representative 1 Wallet ID: {rep1_wallet}")
+        # check if account has any balance and send the funds if not
+        if account_balance['balance'] <= 0 and account_balance['pending'] <= 0:
+            logging.debug(f"account_balance_balance: {account_balance['balance']}")
+            logging.debug(f"account_balance_pending: {account_balance['pending']}")
+            logging.info(f"Sending funds to representative {i} ...")
+            node.send(live_genesis_wallet, live_genesis_key['account'],
+                      account,
+                      amount=100000000000000000000000000000)
+            logging.debug(f"Representative {i} balance: {account_balance}")
+        else:
+            logging.info(f"Representative {i} funded! Skipping...")
+            logging.debug(f"Representative {i} balance: {account_balance}")
 
-    # create landing wallet
-#    landing_wallet = None
-#    if create_landing_wallet:
-#        try:
-#            landing_wallet = node.wallet_create()
-#            logging.info('Creating landing wallet')
-#            logging.debug(f"Wallet ID {landing_wallet}")
-#
-#            # add representative 0 seed to the wallet
-#            landing_wallet_details = node.wallet_change_seed(landing_wallet, landing_key_seed)
-#            logging.info('Adding landing seed to wallet')
-#            logging.debug(f"Landing Wallet ID: {landing_wallet}")
-#            logging.debug(f"Landing Seed: {landing_key_seed}")
-#            logging.debug(f"Landing Wallet Details: {landing_wallet}")
-#        except pnrw.exceptions as error:
-#            logging.error(error)
-#    else:
-#        logging.info("Skipping creating representative 1 wallet...")
-#        logging.info("Getting representative 1 wallet id...")
-#        for wallet in wallet_id_list():
-#            account_list = node.account_list(wallet)
-#            logging.debug(f"Wallet ID: {wallet}")
-#            logging.debug(f"Accounts in this wallet: {account_list}")
-#            if landing_key['account'] in account_list:
-#                logging.info('Landing wallet id found.')
-#                landing_wallet = wallet
-#                logging.debug(f"Landing Wallet ID: {landing_wallet}")
+    # fund genesis accounts
+    for i, account in enumerate(live_genesis_accounts):
+        # get account balance
+        account_balance = node.account_balance(account)
+        logging.debug(f"genesis account: {account}")
+        logging.debug(f"genesis account balance: {account_balance}")
+
+        # check if account has balance. if not fund the account
+        if account_balance['balance'] <= 0 and account_balance['pending'] <= 0:
+            logging.debug(f"account_balance_balance: {account_balance['balance']}")
+            logging.debug(f"account_balance_pending: {account_balance['pending']}")
+            logging.info(f"Sending funds to genesis account: {account} ...")
+            amount = max_supply/len(live_genesis_accounts)
+            node.send(live_genesis_wallet, live_genesis_key['account'],
+                      account,
+                      amount=amount)
+            logging.debug(f"Sent : {amount}")
+        else:
+            logging.info("Genesis account has been funded. Skipping...")
+            logging.debug(f"Account balance: {account_balance}")
+
+    # get representatives walled ids
+    live_pre_conf_reps_wallet_ids = []
+    for i, wallet in enumerate(wallet_id_list):
+        account_list = node.account_list(wallet)
+        logging.debug(f"Wallet ID: {wallet}")
+        logging.debug(f"Accounts in this wallet: {account_list}")
+        if live_pre_conf_reps_accounts in account_list:
+            logging.info('Representative account wallet id found.')
+            live_pre_conf_reps_wallet_ids.append(wallet)
+            logging.debug(f"Genesis Wallet ID: {live_pre_conf_reps_wallet_ids}")
+
+    # change genesis accounts representatives to officials representatives
+    logging.info(f"live_genesis_accounts: {live_genesis_accounts}")
+    for i, account in enumerate(live_genesis_accounts):
+        # get account's representative
+        logging.info("Getting genesis account representative...")
+        account_representative = node.account_representative(account)
+        logging.info(f"Genesis account {i} representative: {account_representative}")
+        logging.debug(f"Genesis account_representative: {account_representative}")
+
+        # check if genesis account representative is correct
+        logging.debug(f"live_pre_conf_reps_accounts[{i}]: {live_pre_conf_reps_accounts[i]}")
+        if account_representative is live_pre_conf_reps_accounts[i]:
+            logging.info(f"Genesis account {i} representative is correct")
+            logging.info(f"NOT changing the representative!")
+            logging.debug(f"account_representative: {account_representative}")
+            logging.debug(f"live_pre_conf_reps_accounts[i]: {live_pre_conf_reps_accounts[i]}")
+        else:
+            logging.info(f"Genesis account {i} representative is NOT correct!")
+            logging.info(f"Changing genesis account {i} representative.")
+            new_account_representative = live_pre_conf_reps_accounts[i]
+            node.account_representative_set(live_genesis_wallet,
+                                            account,
+                                            new_account_representative)
+
+
+
+
 if args.clean:
     print("""
 WARNING! WARNING! WARNING!
@@ -321,7 +293,7 @@ Make sure you have backup your local node wallets and wallet data before proceed
 
     if confirm_delete == "yes" or confirm_delete == "Yes" or confirm_delete == "YES":
         try:
-            for wallet in wallet_id_list():
+            for wallet in wallet_id_list:
                 logging.info('Removing wallet from local node...')
                 node.wallet_destroy(wallet)
         except pnrw.exceptions as error:
