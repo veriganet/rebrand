@@ -7,8 +7,20 @@ abbreviation = lib.get_env_variable('ABBREVIATION')
 
 domainsvc = lib.get_env_variable('DOMAINSVC')
 
+# deprecate this
 rep0 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0')
 rep1 = lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1')
+
+reps_from_env = [
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP0'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP1'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP2'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP3'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP4'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP5'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP6'),
+    lib.get_env_variable('LIVE_PRE_CONFIGURED_ACCOUNT_REP7'),
+]
 
 # supply_multiplier
 supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
@@ -85,6 +97,12 @@ lib.find_and_replace("%s%s/public/static/js/main.js" % (lib.cwd(), subdir),
                  str.encode(updateGoalMain), str.encode(updateGoalMainReplace))
 
 
+# representativeAccounts
+reps = ""
+for rep in reps_from_env:
+    if rep:
+        reps = reps + f"    \"{rep}\",\n"
+
 viewPrincipals = '''  const nf_reps = [
     "nano_3arg3asgtigae3xckabaaewkx3bzsh7nwz7jkmjos79ihyaxwphhm6qgjps4",
     "nano_1stofnrxuz3cai7ze75o174bpm7scwj9jn3nxsn8ntzg784jf1gzn1jjdkou",
@@ -95,10 +113,9 @@ viewPrincipals = '''  const nf_reps = [
     "nano_1anrzcuwe64rwxzcco8dkhpyxpi8kd7zsjc1oeimpc3ppca4mrjtwnqposrs",
     "nano_1hza3f7wiiqa7ig3jczyxj5yo86yegcmqk3criaz838j91sxcckpfhbhhra1"
   ];'''
-viewPrincipalsReplace = '''  const nf_reps = [
-    "{rep0}",
-    "{rep1}"
-  ];'''.format(rep0=rep0, rep1=rep1)
+viewPrincipalsReplace = f'''  const nf_reps = [
+{reps.rstrip()}
+  ];'''.format(reps=reps)
 lib.find_and_replace("%s%s/views/principals.ejs" % (lib.cwd(), subdir),
                  str.encode(viewPrincipals), str.encode(viewPrincipalsReplace))
 
@@ -113,10 +130,9 @@ viewRepresentatives = '''  const nf_reps = [
     "nano_1anrzcuwe64rwxzcco8dkhpyxpi8kd7zsjc1oeimpc3ppca4mrjtwnqposrs",
     "nano_1hza3f7wiiqa7ig3jczyxj5yo86yegcmqk3criaz838j91sxcckpfhbhhra1"
   ];'''
-viewRepresentativesReplace = '''  const nf_reps = [
-    "{rep0}",
-    "{rep1}"
-  ];'''.format(rep0=rep0, rep1=rep1)
+viewRepresentativesReplace = f'''  const nf_reps = [
+{reps.rstrip()}
+  ];'''.format(reps=reps)
 lib.find_and_replace("%s%s/views/statistics/representatives.ejs" % (lib.cwd(), subdir),
                  str.encode(viewRepresentatives), str.encode(viewRepresentativesReplace))
 
@@ -148,9 +164,10 @@ lib.find_and_replace("%s%s/partials/footer.ejs" % (lib.cwd(), subdir),
 words = [
     [b"nano_", b"%s_" % str.encode(abbreviation)],
     [b"|nano", b"|%s" % str.encode(abbreviation)],
+    [b" NANO", b" %s" % str.encode(abbreviation.upper())],
     [b"https://mynano.ninja/api/", b"https://%s-ninja.%s/api/" % (str.encode(abbreviation), str.encode(domainsvc))],
     [b"Nano cryptocurrency!", b"%s cryptocurrency!" % str.encode(abbreviation.upper())],
     [b"1000000000000000000000000000000", b"%s" % str.encode(supply_multiplier)],
+    [b"133248289218203497353846153999000000001", b"%s" % str.encode("340282366920938463463374607431768211455")],
 ]
 lib.replace_all(words, ignore_list, subdir)
-
