@@ -95,7 +95,8 @@ live_pre_conf_reps_seeds = [
     get_env_variable('LIVE_PRE_CONF_REP_3_KEY_SEED', ""),
     get_env_variable('LIVE_PRE_CONF_REP_4_KEY_SEED', ""),
     get_env_variable('LIVE_PRE_CONF_REP_5_KEY_SEED', ""),
-    get_env_variable('LIVE_PRE_CONF_REP_6_KEY_SEED', "")
+    get_env_variable('LIVE_PRE_CONF_REP_6_KEY_SEED', ""),
+    get_env_variable('LIVE_PRE_CONF_REP_7_KEY_SEED', "")
 ]
 
 live_pre_conf_reps_accounts = []
