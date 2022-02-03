@@ -83,6 +83,7 @@ supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
 
 # work threshold
 work_threshold = lib.get_env_variable('WORK_THRESHOLD')
+work_thresholds = work_threshold.split(",")
 work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
 work_receive_threshold_default = lib.get_env_variable('WORK_RECEIVE_THRESHOLD_DEFAULT')
 
@@ -540,20 +541,22 @@ lib.find_and_replace("%snano-node/nano/node/nodeconfig.cpp" % lib.cwd(),
                      b'preconfigured_peers.push_back (default_live_peer_network);',
                      b"%s" % str.encode(preconfigured_peers.strip()))
 
+# epoch1 work threshold
 lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
-                     b"0xfffffff800000000", b"0x%s" % str.encode(work_threshold_default))
+                     b"0xffffffc000000000", b"0x%s" % str.encode(work_thresholds[0]))
 
+# send work threshold
 lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
-                     b"0xfffffe0000000000", b"0x%s" % str.encode(work_receive_threshold_default))
+                     b"0xfffffff800000000", b"0x%s" % str.encode(work_thresholds[1]))
+
+# receive work threshold
+lib.find_and_replace("%snano-node/nano/lib/config.cpp" % lib.cwd(),
+                     b"0xfffffe0000000000", b"0x%s" % str.encode(work_thresholds[2]))
 
 gxrb_ratio = supply_multiplier + "000"
-print(len(gxrb_ratio))
 mxrb_ratio = supply_multiplier
-print(len(mxrb_ratio))
 kxrb_ratio = supply_multiplier[:-3]
-print(len(kxrb_ratio))
 xrb_ratio = supply_multiplier[:-6]
-print(len(xrb_ratio))
 
 nanoUnit128 = """nano::uint128_t const Gxrb_ratio = nano::uint128_t ("1000000000000000000000000000000000"); // 10^33
 nano::uint128_t const Mxrb_ratio = nano::uint128_t ("1000000000000000000000000000000"); // 10^30

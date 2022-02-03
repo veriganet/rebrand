@@ -31,6 +31,9 @@ supply_multiplier = lib.get_env_variable('SUPPLY_MULTIPLIER')
 
 nault_store_key = lib.get_env_variable('NAULT_STORE_KEY')
 nault_price_url = lib.get_env_variable('NAULT_PRICE_URL')
+
+work_threshold = lib.get_env_variable('WORK_THRESHOLD')
+work_thresholds = work_threshold.split(",")
 work_threshold_default = lib.get_env_variable('WORK_THRESHOLD_DEFAULT')
 
 
@@ -416,7 +419,7 @@ lib.find_and_replace("%sNault/src/app/services/price.service.ts" % lib.cwd(),
                  str.encode(getPriceReplace))
 
 baseThreshold = "fffffff800000000"
-baseThresholdReplace = "%s" % work_threshold_default
+baseThresholdReplace = "%s" % work_thresholds[1]
 lib.find_and_replace("%sNault/src/app/services/pow.service.ts" % lib.cwd(),
                  str.encode(baseThreshold),
                  str.encode(baseThresholdReplace))
