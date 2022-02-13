@@ -467,7 +467,8 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     live_pre_conf_rep_public_key_6 = live_pre_conf_rep_6_public_key
     live_pre_conf_rep_public_key_7 = live_pre_conf_rep_7_public_key
     live_node_peering_port = args.live_network_peering_port
-    s3_bucket_name = "veriga-%s" % args.abbreviation,
+    k8s_cluster = 'k8s0'
+    s3_bucket_name = "veriga-%s" % args.abbreviation
     domain_svc = 'verigasvc.com'
     description = ''
     debug = 'DEBUG'
@@ -582,6 +583,7 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     "live_pre_conf_rep_private_key_5": "{live_pre_conf_rep_private_key_5.upper()}",
     "live_pre_conf_rep_private_key_6": "{live_pre_conf_rep_private_key_6.upper()}",
     "live_pre_conf_rep_private_key_7": "{live_pre_conf_rep_private_key_7.upper()}",
+    "k8s_cluster": "{k8s_cluster}"
     "nano_network": "{nano_network}",
     "live_node_peering_port": "{live_node_peering_port}",
     "beta_node_peering_port": "{beta_node_peering_port}",

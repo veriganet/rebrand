@@ -3,10 +3,8 @@
 import argparse
 import os
 import logging
-import sys
 import subprocess
 import pnrw
-import json
 
 main_desc = "Script the bootstrap newly launched blockchain." \
             "Example: " \
@@ -157,6 +155,7 @@ if args.boot:
 
     # create genesis wallet
     live_genesis_wallet = None
+    account_list = None
     if create_genesis_wallet:
         try:
             live_genesis_wallet = node.wallet_create()
@@ -193,12 +192,14 @@ if args.boot:
         live_genesis_accounts.append(live_genesis_account)
 
     # create genesis accounts for number of representatives
-    if len(live_genesis_accounts) < len(live_pre_conf_reps_accounts):
+    current_genesis_account_list = node.account_list(live_genesis_wallet)
+    logging.debug(f"current_genesis_account_list: {current_genesis_account_list}")
+    if len(current_genesis_account_list) < len(live_genesis_accounts):
         logging.info("Adding more accounts to genesis wallet.")
         logging.debug("This means there are less accounts in genesis wallet then active representatives.")
         try:
             number_of_accounts = len(live_pre_conf_reps_accounts)
-            genesis_account = node.accounts_create(live_genesis_wallet, number_of_accounts)
+            genesis_account = node.accounts_create(live_genesis_wallet, number_of_accounts-1)
             logging.info(f"Creating {number_of_accounts} in genesis wallet.")
         except pnrw.exceptions as error:
             logging.error(error)
@@ -237,10 +238,11 @@ if args.boot:
             logging.debug(f"account_balance_balance: {account_balance['balance']}")
             logging.debug(f"account_balance_pending: {account_balance['pending']}")
             logging.info(f"Sending funds to genesis account: {account} ...")
-            amount = max_supply/len(live_genesis_accounts)
+            amount = int(max_supply/len(live_genesis_accounts))
+            logging.debug(f"amount: {amount}")
             node.send(live_genesis_wallet, live_genesis_key['account'],
                       account,
-                      amount=amount)
+                      amount=f"{amount}")
             logging.debug(f"Sent : {amount}")
         else:
             logging.info("Genesis account has been funded. Skipping...")
