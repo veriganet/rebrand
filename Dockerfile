@@ -18,6 +18,6 @@ ADD rebrand_proxy.py /usr/local/bin/rebrand-proxy
 RUN chmod +x /usr/local/bin/rebrand-proxy
 
 ADD boompow_services_auto.py /opt/boompow_services_auto.py
-RUN chmod +x boompow_services_auto.py
+RUN chmod +x /opt/boompow_services_auto.py
 
 ADD asset/xno-symbol-blank.svg /opt/asset/xno-symbol-blank.svg
