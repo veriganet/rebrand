@@ -583,7 +583,7 @@ live_pre_conf_rep_account_7: {live_pre_conf_rep_account_7}'''
     "live_pre_conf_rep_private_key_5": "{live_pre_conf_rep_private_key_5.upper()}",
     "live_pre_conf_rep_private_key_6": "{live_pre_conf_rep_private_key_6.upper()}",
     "live_pre_conf_rep_private_key_7": "{live_pre_conf_rep_private_key_7.upper()}",
-    "k8s_cluster": "{k8s_cluster}"
+    "k8s_cluster": "{k8s_cluster}",
     "nano_network": "{nano_network}",
     "live_node_peering_port": "{live_node_peering_port}",
     "beta_node_peering_port": "{beta_node_peering_port}",
