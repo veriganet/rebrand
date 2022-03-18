@@ -67,6 +67,12 @@ live_pre_configured_rep5 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP5')
 live_pre_configured_rep6 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP6')
 live_pre_configured_rep7 = lib.get_env_variable('LIVE_PRE_CONFIGURED_REP7')
 
+beta_pre_configured_rep0 = lib.get_env_variable('BETA_PRE_CONFIGURED_REP0')
+beta_pre_configured_rep1 = lib.get_env_variable('BETA_PRE_CONFIGURED_REP1')
+
+test_pre_configured_rep0 = lib.get_env_variable('TEST_PRE_CONFIGURED_REP0')
+test_pre_configured_rep1 = lib.get_env_variable('TEST_PRE_CONFIGURED_REP1')
+
 live_node_peering_port = lib.get_env_variable('LIVE_NODE_PEERING_PORT')
 beta_node_peering_port = lib.get_env_variable('BETA_NODE_PEERING_PORT')
 test_node_peering_port = lib.get_env_variable('TEST_NODE_PEERING_PORT')
@@ -588,5 +594,6 @@ online_weight_minimum_replace = "nano::amount online_weight_minimum{ %s * nano::
 lib.find_and_replace("%snano-node/nano/node/nodeconfig.hpp" % lib.cwd(),
                      str.encode(online_weight_minimum), str.encode(online_weight_minimum_replace))
 
-
-
+lib.find_and_replace("%snano-node/nano/secure/common.cpp" % lib.cwd(),
+                     b'nano_3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj4wzser3x',
+                     b'%s_3qb6o6i1tkzr6jwr5s7eehfxwg9x6eemitdinbpi7u8bjjwsgqfj4wzser3x' % str.encode(abbreviation))

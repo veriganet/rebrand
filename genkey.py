@@ -313,6 +313,7 @@ def output():
                                                                                             '%s_' % args.abbreviation)
 
     keys_output = f'''faucet_key_seed: {faucet_key_seed.upper()}
+
 faucet_private_key: {faucet_private_key.upper()}
 faucet_public_key: {faucet_public_key.upper()}
 faucet_account_id: {faucet_account_id}
@@ -341,24 +342,24 @@ canary_test_account_id: {canary_test_account_id}
 genesis_beta_key_seed: {genesis_beta_key_seed.upper()}
 genesis_beta_private_key: {genesis_beta_private_key.upper()}
 genesis_beta_public_key: {genesis_beta_public_key.upper()}
-genesis_beta_account_id: {genesis_beta_account_id}
+genesis_beta_account_id: {genesis_beta_account_id_replaced}
 
 #!!! IMPORTANT - KEEP THIS KEYS VERY SECURE !!!#
 genesis_live_key_seed: {genesis_live_key_seed.upper()}
 genesis_live_private_key: {genesis_live_private_key.upper()}
 genesis_live_public_key: {genesis_live_public_key.upper()}
-genesis_live_account_id: {genesis_live_account_id}
+genesis_live_account_id: {genesis_live_account_id_replaced}
 
 #!!! IMPORTANT - KEEP THIS KEYS VERY SECURE !!!#
 genesis_dev_key_seed: {genesis_dev_key_seed.upper()}
 genesis_dev_private_key: {genesis_dev_private_key.upper()}
 genesis_dev_public_key: {genesis_dev_public_key.upper()}
-genesis_dev_account_id: {genesis_dev_account_id}
+genesis_dev_account_id: {genesis_dev_account_id_replaced}
 
 genesis_test_key_seed: {genesis_test_key_seed.upper()}
 genesis_test_private_key: {genesis_test_private_key.upper()}
 genesis_test_public_key: {genesis_test_public_key.upper()}
-genesis_test_account_id: {genesis_test_account_id}
+genesis_test_account_id: {genesis_test_account_id_replaced}
 
 beta_pre_conf_rep_0_key_seed: {beta_pre_conf_rep_0_key_seed.upper()}
 beta_pre_conf_rep_0_private_key: {beta_pre_conf_rep_0_private_key.upper()}
